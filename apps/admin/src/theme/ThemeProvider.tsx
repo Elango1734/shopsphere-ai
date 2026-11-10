@@ -33,13 +33,13 @@ function applyThemeVars(roles: SemanticColorRoles): void {
  */
 function applyNavVars(): void {
   const root = document.documentElement;
-  root.style.setProperty('--color-nav-background', palette.navy[600]);
-  root.style.setProperty('--color-nav-surface-active', palette.navy[500]);
-  root.style.setProperty('--color-nav-text', palette.ivory[100]);
-  root.style.setProperty('--color-nav-text-muted', palette.navy[100]);
-  root.style.setProperty('--color-nav-border', palette.navy[400]);
-  root.style.setProperty('--color-nav-accent', palette.coral[400]);
-  root.style.setProperty('--color-nav-on-accent', palette.neutral[0]);
+  root.style.setProperty('--color-nav-background', palette.grey[900]);
+  root.style.setProperty('--color-nav-surface-active', palette.grey[700]);
+  root.style.setProperty('--color-nav-text', palette.grey[0]);
+  root.style.setProperty('--color-nav-text-muted', palette.grey[400]);
+  root.style.setProperty('--color-nav-border', palette.grey[700]);
+  root.style.setProperty('--color-nav-accent', palette.grey[0]);
+  root.style.setProperty('--color-nav-on-accent', palette.grey[1000]);
 }
 
 function applyStaticVars(): void {

@@ -1,56 +1,36 @@
 /**
- * ShopSphere AI design tokens — the single source of truth architecture.md
+ * Elviree design tokens — the single source of truth architecture.md
  * requires ("Define design tokens once in packages/config"). Plain data, no
  * React/React Native/CSS dependency, so mobile (StyleSheet/NativeWind) and
  * admin web (CSS variables/Tailwind) both consume the same values without
  * either platform owning the definition.
  *
- * Brand anchors: warm ivory, midnight navy, electric coral.
+ * Values are extracted from the Evira e-commerce UI kit via the Figma REST
+ * API (see tokens.json in the extraction output). The kit is deliberately
+ * monochrome: there is no chromatic brand hue, contrast and weight carry the
+ * hierarchy instead, and the primary CTA is near-black in light mode /
+ * mid-grey in dark mode.
  */
 
 export const palette = {
-  ivory: {
-    50: '#FFFEFB',
-    100: '#FBF6EC',
-    200: '#F5EDDB',
-    300: '#EDE0C4',
-    400: '#DECBA0'
-  },
-  navy: {
-    50: '#E9ECF4',
-    100: '#C7CEE2',
-    200: '#8D9BC2',
-    300: '#4C5D8A',
-    400: '#283357',
-    500: '#141B30',
-    600: '#10152A',
-    700: '#0B0F20',
-    800: '#070A17',
-    900: '#04050D'
-  },
-  coral: {
-    50: '#FFEFEC',
-    100: '#FFD6CE',
-    200: '#FFAD9D',
-    300: '#FF8066',
-    400: '#FF5A3C',
-    500: '#F03E22',
-    600: '#CC2E16',
-    700: '#A12411'
-  },
-  neutral: {
+  /** Greyscale ramp read off the kit's unlocked screens. */
+  grey: {
     0: '#FFFFFF',
-    50: '#F7F7F5',
-    100: '#ECECE8',
-    200: '#D9D9D3',
-    300: '#B8B8B0',
-    400: '#8E8E85',
-    500: '#6B6B63',
-    600: '#4D4D47',
-    700: '#35352F',
-    800: '#232320',
-    900: '#141412'
+    50: '#FAFAFA',
+    100: '#EEEEEE',
+    200: '#E0E0E0',
+    300: '#DADADA',
+    400: '#BDBDBD',
+    500: '#9E9E9E',
+    600: '#616161',
+    700: '#35383F',
+    800: '#212121',
+    900: '#1F222A',
+    950: '#181A20',
+    1000: '#000000'
   },
+  /** Icon/illustration ink used throughout the kit's vector art. */
+  ink: '#130F26',
   success: { 500: '#1F9D63', 700: '#136B44' },
   warning: { 500: '#D98A14', 700: '#8F5B0C' },
   danger: { 500: '#E0402F', 700: '#A32C1F' },
@@ -78,65 +58,83 @@ export interface SemanticColorRoles {
   focusRing: string;
 }
 
-/** Warm-ivory-on-midnight-navy light theme: ivory surfaces, navy text, coral accent. */
+/** Evira light: white surfaces, #212121 ink, near-black pill CTAs. */
 export const lightTheme: SemanticColorRoles = {
-  background: palette.ivory[100],
-  surface: palette.ivory[50],
-  surfaceElevated: palette.neutral[0],
-  surfaceSunken: palette.ivory[200],
-  textPrimary: palette.navy[700],
-  textSecondary: palette.navy[400],
-  textMuted: palette.neutral[500],
-  textInverse: palette.ivory[50],
-  border: palette.ivory[300],
-  borderSubtle: palette.ivory[200],
-  accent: palette.coral[400],
-  accentPressed: palette.coral[600],
-  onAccent: palette.neutral[0],
+  background: palette.grey[0],
+  surface: palette.grey[0],
+  surfaceElevated: palette.grey[0],
+  surfaceSunken: palette.grey[50],
+  textPrimary: palette.grey[800],
+  textSecondary: palette.grey[600],
+  textMuted: palette.grey[500],
+  textInverse: palette.grey[0],
+  border: palette.grey[300],
+  borderSubtle: palette.grey[100],
+  accent: palette.grey[800],
+  accentPressed: palette.grey[1000],
+  onAccent: palette.grey[0],
   success: palette.success[500],
   warning: palette.warning[500],
   danger: palette.danger[500],
   info: palette.info[500],
-  focusRing: palette.coral[400]
+  focusRing: palette.grey[800]
 };
 
-/** Midnight-navy-on-near-black dark theme: the same accent, inverted surfaces. */
+/** Evira dark: #181A20 ground, #1F222A cards, #35383F elevated + CTA. */
 export const darkTheme: SemanticColorRoles = {
-  background: palette.navy[700],
-  surface: palette.navy[600],
-  surfaceElevated: palette.navy[500],
-  surfaceSunken: palette.navy[800],
-  textPrimary: palette.ivory[100],
-  textSecondary: palette.navy[100],
-  textMuted: palette.neutral[400],
-  textInverse: palette.navy[700],
-  border: palette.navy[400],
-  borderSubtle: palette.navy[500],
-  accent: palette.coral[400],
-  accentPressed: palette.coral[300],
-  onAccent: palette.navy[900],
+  background: palette.grey[950],
+  surface: palette.grey[900],
+  surfaceElevated: palette.grey[700],
+  surfaceSunken: palette.grey[1000],
+  textPrimary: palette.grey[0],
+  textSecondary: palette.grey[200],
+  textMuted: palette.grey[500],
+  textInverse: palette.grey[950],
+  border: palette.grey[700],
+  borderSubtle: palette.grey[900],
+  accent: palette.grey[700],
+  accentPressed: palette.grey[600],
+  onAccent: palette.grey[0],
   success: palette.success[500],
   warning: palette.warning[500],
   danger: palette.danger[500],
   info: palette.info[500],
-  focusRing: palette.coral[300]
+  focusRing: palette.grey[0]
 };
 
 export const typography = {
   fontFamily: {
-    // Platform-native system fonts by default; mobile/admin may map these to a licensed editorial typeface.
-    sans: 'System',
+    /** The kit sets every text node in Urbanist. */
+    sans: 'Urbanist',
     serif: 'Georgia'
   },
-  fontSize: { xs: 12, sm: 14, base: 16, md: 18, lg: 20, xl: 24, '2xl': 28, '3xl': 34, '4xl': 42 },
-  fontWeight: { regular: '400', medium: '500', semibold: '600', bold: '700' },
+  /** Sizes observed in the kit: 14 / 16 / 18 / 24 / 40 carry almost everything. */
+  fontSize: { xs: 12, sm: 14, base: 16, md: 18, lg: 20, xl: 24, '2xl': 28, '3xl': 34, '4xl': 40 },
+  fontWeight: { regular: '400', medium: '500', semibold: '600', bold: '700', black: '900' },
   lineHeight: { tight: 1.15, snug: 1.3, normal: 1.5, relaxed: 1.65 }
+} as const;
+
+/**
+ * Named text styles lifted verbatim from the kit, as size/lineHeight/weight
+ * triples. Screens should reach for these rather than re-deriving sizes.
+ */
+export const textStyles = {
+  h1: { fontSize: 40, lineHeight: 48, fontWeight: '900' },
+  h2: { fontSize: 24, lineHeight: 29, fontWeight: '700' },
+  h3: { fontSize: 20, lineHeight: 25, fontWeight: '700' },
+  bodyLgBold: { fontSize: 18, lineHeight: 22, fontWeight: '700' },
+  bodyLg: { fontSize: 18, lineHeight: 25, fontWeight: '500' },
+  bodyBold: { fontSize: 16, lineHeight: 22, fontWeight: '700' },
+  body: { fontSize: 16, lineHeight: 22, fontWeight: '600' },
+  caption: { fontSize: 14, lineHeight: 20, fontWeight: '500' },
+  captionBold: { fontSize: 14, lineHeight: 20, fontWeight: '600' }
 } as const;
 
 /** 4px grid. */
 export const spacing = { 0: 0, 1: 4, 2: 8, 3: 12, 4: 16, 5: 20, 6: 24, 8: 32, 10: 40, 12: 48, 16: 64, 20: 80 } as const;
 
-export const radii = { sm: 6, md: 10, lg: 16, xl: 24, full: 999 } as const;
+/** Corner radii observed in the kit: 8 / 12 / 16 / 20, plus fully-rounded pills. */
+export const radii = { sm: 8, md: 12, lg: 16, xl: 20, full: 100 } as const;
 
 export const motion = {
   duration: { fast: 120, base: 200, slow: 320 },
