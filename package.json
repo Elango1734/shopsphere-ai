@@ -1,0 +1,35 @@
+{
+  "name": "shopsphere-ai",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ShopSphere AI multi-vendor commerce platform monorepo",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=22 <23",
+    "npm": ">=10 <11"
+  },
+  "scripts": {
+    "typecheck:shared-types": "npm run typecheck --workspace=@shopsphere/shared-types",
+    "typecheck:validation": "npm run typecheck --workspace=@shopsphere/validation",
+    "typecheck:config": "npm run typecheck --workspace=@shopsphere/config",
+    "typecheck:api-client": "npm run typecheck --workspace=@shopsphere/api-client",
+    "typecheck:api": "npm run typecheck --workspace=@shopsphere/api",
+    "typecheck:admin": "npm run typecheck --workspace=@shopsphere/admin",
+    "typecheck:mobile": "npm exec --workspace=@shopsphere/mobile -- tsc --noEmit",
+    "typecheck": "npm run typecheck:shared-types && npm run typecheck:validation && npm run typecheck:config && npm run typecheck:api-client && npm run typecheck:api && npm run typecheck:admin && npm run typecheck:mobile"
+  },
+  "devDependencies": {
+    "typescript": "5.8.3"
+  },
+  "overrides": {
+    "expo": "~53.0.27",
+    "react-native": "0.79.6",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-test-renderer": "19.0.0",
+    "zod": "3.24.2"
+  }
+}

@@ -1,0 +1,265 @@
+openapi: 3.0.3
+info:
+  title: ShopSphere AI API
+  version: '0.1.0'
+  description: >
+    REST API for ShopSphere AI, versioned under /api/v1. This document covers
+    the representative endpoint groups implemented in this stage; see
+    docs/api-specification.md for the full route inventory and contract
+    rules. NOT every implemented route is documented here yet — treat this as
+    illustrative of the shared contract, not an exhaustive reference.
+servers:
+  - url: /api/v1
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Money:
+      type: object
+      required: [amountMinor, currency]
+      properties:
+        amountMinor: { type: integer, minimum: 0 }
+        currency: { type: string, minLength: 3, maxLength: 3 }
+    ApiSuccessEnvelope:
+      type: object
+      required: [success, data, meta, requestId]
+      properties:
+        success: { type: boolean, enum: [true] }
+        data: {}
+        meta: { type: object }
+        requestId: { type: string }
+    ApiErrorEnvelope:
+      type: object
+      required: [success, error, requestId]
+      properties:
+        success: { type: boolean, enum: [false] }
+        error:
+          type: object
+          required: [code, message, details]
+          properties:
+            code: { type: string }
+            message: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  code: { type: string }
+                  message: { type: string }
+                  field: { type: string }
+        requestId: { type: string }
+  responses:
+    Error:
+      description: Structured error envelope
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiErrorEnvelope' }
+paths:
+  /health:
+    get:
+      summary: Liveness check
+      responses:
+        '200': { description: OK }
+  /ready:
+    get:
+      summary: Readiness check (includes database connectivity)
+      responses:
+        '200': { description: Ready }
+        '503': { description: Not ready }
+  /auth/register:
+    post:
+      summary: Register a customer account (never grants seller/support/administrator roles)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [password]
+              properties:
+                email: { type: string, format: email }
+                phone: { type: string }
+                password: { type: string, minLength: 10 }
+                displayName: { type: string }
+      responses:
+        '201': { description: Account created }
+        '409': { $ref: '#/components/responses/Error' }
+  /auth/login:
+    post:
+      summary: Sign in with email/phone + password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                phone: { type: string }
+                password: { type: string }
+      responses:
+        '200': { description: Signed in }
+        '401': { $ref: '#/components/responses/Error' }
+  /auth/refresh:
+    post:
+      summary: Rotate a refresh token for a new access token
+      responses:
+        '200': { description: Rotated }
+        '401': { $ref: '#/components/responses/Error' }
+  /auth/me:
+    get:
+      summary: Current authenticated user's profile
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: OK }
+        '401': { $ref: '#/components/responses/Error' }
+  /categories:
+    get:
+      summary: List active categories
+      responses:
+        '200': { description: OK }
+  /products:
+    get:
+      summary: Paginated, filterable catalog listing (published products only)
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 100 } }
+        - { name: categoryId, in: query, schema: { type: string } }
+        - { name: q, in: query, schema: { type: string } }
+      responses:
+        '200': { description: OK }
+  /products/{slug}:
+    get:
+      summary: Product detail with active variants and computed availability
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: OK }
+        '404': { $ref: '#/components/responses/Error' }
+  /cart:
+    get:
+      summary: Current (guest or authenticated) cart, revalidated against live catalog state
+      responses:
+        '200': { description: OK }
+  /cart/items:
+    post:
+      summary: Add a variant to the cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [variantId, quantity]
+              properties:
+                variantId: { type: string }
+                quantity: { type: integer, minimum: 1 }
+      responses:
+        '201': { description: Added }
+  /checkout:
+    post:
+      summary: Place an order from the current cart (idempotent)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                shippingAddressId: { type: string }
+                couponCode: { type: string }
+      responses:
+        '201': { description: Order placed }
+        '409':
+          description: Idempotency conflict or duplicate checkout
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ApiErrorEnvelope' }
+        '422': { $ref: '#/components/responses/Error' }
+  /orders:
+    get:
+      summary: The authenticated customer's own orders
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: OK }
+  /orders/{orderId}:
+    get:
+      summary: Order detail (ownership-enforced)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: orderId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: OK }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+  /orders/{orderId}/cancel:
+    post:
+      summary: Cancel an own order while still pending/confirmed (restocks inventory)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: orderId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Cancelled }
+        '422': { $ref: '#/components/responses/Error' }
+  /webhooks/payments/{provider}:
+    post:
+      summary: Verified, deduplicated payment-provider webhook
+      parameters:
+        - { name: provider, in: path, required: true, schema: { type: string } }
+        - name: X-ShopSphere-Signature
+          in: header
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json: {}
+      responses:
+        '200': { description: Processed, duplicate, or ignored (all are 200 — the provider should not retry) }
+        '401': { description: Invalid signature }
+        '422': { $ref: '#/components/responses/Error' }
+  /seller/onboard:
+    post:
+      summary: Create the caller's seller profile (pending_review)
+      security: [{ bearerAuth: [] }]
+      responses:
+        '201': { description: Created }
+        '409': { $ref: '#/components/responses/Error' }
+  /seller/products:
+    post:
+      summary: Create a draft product owned by the caller's active seller profile
+      security: [{ bearerAuth: [] }]
+      responses:
+        '201': { description: Created }
+        '403': { $ref: '#/components/responses/Error' }
+  /admin/users:
+    get:
+      summary: Administrator-only user listing
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: OK }
+        '403': { $ref: '#/components/responses/Error' }
+  /ai/discovery:
+    post:
+      summary: Catalog-grounded discovery chat turn (development provider — see README)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [message]
+              properties:
+                message: { type: string }
+                conversationId: { type: string }
+      responses:
+        '200': { description: OK }
