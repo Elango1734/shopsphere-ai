@@ -102,6 +102,20 @@ export const darkTheme: SemanticColorRoles = {
   focusRing: palette.grey[0]
 };
 
+/**
+ * iOS resolves bundled fonts by PostScript name, and Urbanist ships each
+ * weight under its own family ("Urbanist Medium", "Urbanist SemiBold"...),
+ * so family+fontWeight does NOT select the right face. Always set
+ * fontFamily to one of these exact names and leave fontWeight unset.
+ */
+export const fontFamilies = {
+  regular: 'Urbanist-Regular',
+  medium: 'Urbanist-Medium',
+  semibold: 'Urbanist-SemiBold',
+  bold: 'Urbanist-Bold',
+  black: 'Urbanist-Black'
+} as const;
+
 export const typography = {
   fontFamily: {
     /** The kit sets every text node in Urbanist. */
@@ -119,15 +133,15 @@ export const typography = {
  * triples. Screens should reach for these rather than re-deriving sizes.
  */
 export const textStyles = {
-  h1: { fontSize: 40, lineHeight: 48, fontWeight: '900' },
-  h2: { fontSize: 24, lineHeight: 29, fontWeight: '700' },
-  h3: { fontSize: 20, lineHeight: 25, fontWeight: '700' },
-  bodyLgBold: { fontSize: 18, lineHeight: 22, fontWeight: '700' },
-  bodyLg: { fontSize: 18, lineHeight: 25, fontWeight: '500' },
-  bodyBold: { fontSize: 16, lineHeight: 22, fontWeight: '700' },
-  body: { fontSize: 16, lineHeight: 22, fontWeight: '600' },
-  caption: { fontSize: 14, lineHeight: 20, fontWeight: '500' },
-  captionBold: { fontSize: 14, lineHeight: 20, fontWeight: '600' }
+  h1: { fontSize: 40, lineHeight: 48, fontFamily: fontFamilies.black },
+  h2: { fontSize: 24, lineHeight: 29, fontFamily: fontFamilies.bold },
+  h3: { fontSize: 20, lineHeight: 25, fontFamily: fontFamilies.bold },
+  bodyLgBold: { fontSize: 18, lineHeight: 22, fontFamily: fontFamilies.bold },
+  bodyLg: { fontSize: 18, lineHeight: 25, fontFamily: fontFamilies.medium },
+  bodyBold: { fontSize: 16, lineHeight: 22, fontFamily: fontFamilies.bold },
+  body: { fontSize: 16, lineHeight: 22, fontFamily: fontFamilies.semibold },
+  caption: { fontSize: 14, lineHeight: 20, fontFamily: fontFamilies.medium },
+  captionBold: { fontSize: 14, lineHeight: 20, fontFamily: fontFamilies.semibold }
 } as const;
 
 /** 4px grid. */
