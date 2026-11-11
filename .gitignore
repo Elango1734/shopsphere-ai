@@ -11,3 +11,6 @@ coverage/
 .DS_Store
 # apps/mobile is its own git repo (Elango1734/ecommerce-mobile-app)
 apps/mobile/
+
+# local MongoDB runtime data -- not source, churns every run
+apps/api/.local-mongo/
