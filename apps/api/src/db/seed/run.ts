@@ -158,7 +158,10 @@ async function seedBrands() {
     { name: 'Northwind Apparel', slug: 'northwind-apparel' },
     { name: 'Circuit & Co', slug: 'circuit-and-co' },
     { name: 'HearthHome', slug: 'hearthhome' },
-    { name: 'PureGlow', slug: 'pureglow' }
+    { name: 'PureGlow', slug: 'pureglow' },
+    { name: 'FreshFields Market', slug: 'freshfields-market' },
+    { name: 'Lantern Press', slug: 'lantern-press' },
+    { name: 'TrailForge Sports', slug: 'trailforge-sports' }
   ];
   const brands = [];
   for (const def of defs) {
@@ -175,7 +178,8 @@ async function seedBrands() {
 async function seedSellers() {
   const defs = [
     { storeName: 'Northwind Trading Co.', slug: 'northwind-trading', email: 'seller.northwind@example.test' },
-    { storeName: 'Circuit Supply', slug: 'circuit-supply', email: 'seller.circuit@example.test' }
+    { storeName: 'Circuit Supply', slug: 'circuit-supply', email: 'seller.circuit@example.test' },
+    { storeName: 'Harvest Grocers', slug: 'harvest-grocers', email: 'seller.harvest@example.test' }
   ];
   const sellers = [];
   for (const def of defs) {
@@ -289,6 +293,397 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       // https://www.pexels.com/photo/minimalist-skincare-serum-bottle-flat-lay-31251033/
       imageUrl: 'https://images.pexels.com/photos/31251033/pexels-photo-31251033.jpeg?cs=tinysrgb&w=900',
       variants: [{ sku: 'SERUM-30ML', attributes: { size: '30ml' }, priceMinor: 2599, onHand: 100 }]
+    },
+    // --- Fashion: dresses + one accessory + one pair of shoes, sellerIndex 0 (Northwind Trading Co.) ---
+    {
+      name: 'Little Black Evening Dress',
+      slug: 'little-black-evening-dress',
+      categorySlug: 'fashion',
+      brandSlug: 'northwind-apparel',
+      sellerIndex: 0,
+      description: 'A fitted black evening dress in flowing jersey, cut for a flattering silhouette day to night.',
+      // Little Black Dress (Unsplash), Wikimedia Commons, CC0, photo by Kira Ikonnikova:
+      // https://commons.wikimedia.org/wiki/File:Little_Black_Dress_(Unsplash).jpg
+      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Little_Black_Dress_%28Unsplash%29.jpg/960px-Little_Black_Dress_%28Unsplash%29.jpg',
+      variants: [
+        { sku: 'DRS-BLK-S', attributes: { color: 'Black', size: 'S' }, priceMinor: 4999, onHand: 30 },
+        { sku: 'DRS-BLK-M', attributes: { color: 'Black', size: 'M' }, priceMinor: 4999, onHand: 35 },
+        { sku: 'DRS-BLK-L', attributes: { color: 'Black', size: 'L' }, priceMinor: 4999, onHand: 18 }
+      ]
+    },
+    {
+      name: 'Floral Print Summer Dress',
+      slug: 'floral-print-summer-dress',
+      categorySlug: 'fashion',
+      brandSlug: 'northwind-apparel',
+      sellerIndex: 0,
+      description: 'A lightweight floral midi dress with adjustable straps, made for warm-weather days.',
+      // Laughing woman in floral dress (Unsplash), Wikimedia Commons, CC0, photo by Brooke Cagle:
+      // https://commons.wikimedia.org/wiki/File:Laughing_woman_in_floral_dress_(Unsplash).jpg
+      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/Laughing_woman_in_floral_dress_%28Unsplash%29.jpg/960px-Laughing_woman_in_floral_dress_%28Unsplash%29.jpg',
+      variants: [
+        { sku: 'DRS-FLR-S', attributes: { color: 'Floral', size: 'S' }, priceMinor: 3899, onHand: 28 },
+        { sku: 'DRS-FLR-M', attributes: { color: 'Floral', size: 'M' }, priceMinor: 3899, onHand: 32 },
+        { sku: 'DRS-FLR-L', attributes: { color: 'Floral', size: 'L' }, priceMinor: 3899, onHand: 14 }
+      ]
+    },
+    {
+      name: 'Patterned Midi Dress',
+      slug: 'patterned-midi-dress',
+      categorySlug: 'fashion',
+      brandSlug: 'northwind-apparel',
+      sellerIndex: 0,
+      description: 'A patterned midi dress with a fitted bodice and a flared skirt, suited to both day and evening wear.',
+      // Summer dress, Wikimedia Commons, public domain (USAID Africa Bureau):
+      // https://commons.wikimedia.org/wiki/File:Summer_dress_(5634765615).jpg
+      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Summer_dress_%285634765615%29.jpg/960px-Summer_dress_%285634765615%29.jpg',
+      variants: [
+        { sku: 'DRS-PTN-S', attributes: { size: 'S' }, priceMinor: 4499, onHand: 20 },
+        { sku: 'DRS-PTN-M', attributes: { size: 'M' }, priceMinor: 4499, onHand: 24 },
+        { sku: 'DRS-PTN-L', attributes: { size: 'L' }, priceMinor: 4499, onHand: 11 }
+      ]
+    },
+    {
+      name: 'Handcrafted Leather Satchel Bag',
+      slug: 'handcrafted-leather-satchel-bag',
+      categorySlug: 'fashion',
+      brandSlug: 'northwind-apparel',
+      sellerIndex: 0,
+      description: 'A hand-stitched full-grain leather satchel with an adjustable strap and a flap closure.',
+      // Leather handbag by Les cuirs d'Agathe (DSC07738), Wikimedia Commons, CC BY 4.0, photo by Trougnouf (Benoit Brummer):
+      // https://commons.wikimedia.org/wiki/File:Leather_handbag_by_Les_cuirs_d%27Agathe_(DSC07738).jpg
+      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Leather_handbag_by_Les_cuirs_d%27Agathe_%28DSC07738%29.jpg/960px-Leather_handbag_by_Les_cuirs_d%27Agathe_%28DSC07738%29.jpg',
+      variants: [{ sku: 'BAG-LTHR-COG', attributes: { color: 'Cognac' }, priceMinor: 8999, onHand: 15 }]
+    },
+    {
+      name: 'Classic White Canvas Sneakers',
+      slug: 'classic-white-canvas-sneakers',
+      categorySlug: 'fashion',
+      brandSlug: 'northwind-apparel',
+      sellerIndex: 0,
+      description: 'Everyday platform canvas sneakers with a lace-up front and a durable rubber sole.',
+      // Superga COTW LINEA UP & DOWN Sneaker, Wikimedia Commons, CC BY 2.0, photo by SPERA.de Designerschuhe:
+      // https://commons.wikimedia.org/wiki/File:Superga_COTW_LINEA_UP_%26_DOWN_Sneaker_mit_Plateau_2790A_Canvas_wei%C3%9F_(white)_(1).jpg
+      imageUrl:
+        'https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Superga_COTW_LINEA_UP_%26_DOWN_Sneaker_mit_Plateau_2790A_Canvas_wei%C3%9F_%28white%29_%281%29.jpg/960px-Superga_COTW_LINEA_UP_%26_DOWN_Sneaker_mit_Plateau_2790A_Canvas_wei%C3%9F_%28white%29_%281%29.jpg',
+      variants: [
+        { sku: 'SNK-WHT-8', attributes: { color: 'White', size: '8' }, priceMinor: 5499, onHand: 26 },
+        { sku: 'SNK-WHT-9', attributes: { color: 'White', size: '9' }, priceMinor: 5499, onHand: 30 },
+        { sku: 'SNK-WHT-10', attributes: { color: 'White', size: '10' }, priceMinor: 5499, onHand: 19 }
+      ]
+    },
+    // --- Groceries, sellerIndex 2 (Harvest Grocers) ---
+    {
+      name: 'Sliced Whole Wheat Bread',
+      slug: 'sliced-whole-wheat-bread',
+      categorySlug: 'groceries',
+      brandSlug: 'freshfields-market',
+      sellerIndex: 2,
+      description: 'A fresh-baked whole wheat loaf, sliced and ready for sandwiches or toast.',
+      // Fresh made bread 05, Wikimedia Commons, CC BY-SA 4.0, photo by FranHogan:
+      // https://commons.wikimedia.org/wiki/File:Fresh_made_bread_05.jpg
+      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/Fresh_made_bread_05.jpg/960px-Fresh_made_bread_05.jpg',
+      variants: [{ sku: 'GRO-BREAD-WW', attributes: { size: '680g loaf' }, priceMinor: 349, onHand: 80 }]
+    },
+    {
+      name: 'Farm Fresh Eggs (Dozen)',
+      slug: 'farm-fresh-eggs-dozen',
+      categorySlug: 'groceries',
+      brandSlug: 'freshfields-market',
+      sellerIndex: 2,
+      description: 'A dozen farm-fresh grade-A eggs, carton-packed for safe delivery.',
+      // Egg cartons with chicken eggs 03, Wikimedia Commons, CC BY-SA 4.0, photo by Krzysztof Golik:
+      // https://commons.wikimedia.org/wiki/File:Egg_cartons_with_chicken_eggs_03.jpg
+      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/Egg_cartons_with_chicken_eggs_03.jpg/960px-Egg_cartons_with_chicken_eggs_03.jpg',
+      variants: [{ sku: 'GRO-EGGS-12', attributes: { size: '12-count' }, priceMinor: 429, onHand: 70 }]
+    },
+    {
+      name: 'Fresh Red Bell Peppers (3-Pack)',
+      slug: 'fresh-red-bell-peppers-3-pack',
+      categorySlug: 'groceries',
+      brandSlug: 'freshfields-market',
+      sellerIndex: 2,
+      description: 'Three crisp, ripe red bell peppers, sold by the pack.',
+      // Fresh red bell peppers arranged in a wooden crate on a table, Wikimedia Commons, CC BY 2.0, photo by Shixart1985:
+      // https://commons.wikimedia.org/wiki/File:Fresh_red_bell_peppers_arranged_in_a_wooden_crate_on_a_table.jpg
+      imageUrl:
+        'https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Fresh_red_bell_peppers_arranged_in_a_wooden_crate_on_a_table.jpg/960px-Fresh_red_bell_peppers_arranged_in_a_wooden_crate_on_a_table.jpg',
+      variants: [{ sku: 'GRO-PEPPER-3PK', attributes: { size: '3-pack' }, priceMinor: 399, onHand: 65 }]
+    },
+    {
+      name: 'Fresh Bananas (Bunch)',
+      slug: 'fresh-bananas-bunch',
+      categorySlug: 'groceries',
+      brandSlug: 'freshfields-market',
+      sellerIndex: 2,
+      description: 'A bunch of ripe, ready-to-eat bananas.',
+      // Bunch of bananas on sale, Wikimedia Commons, CC0, photo by Wilfredor:
+      // https://commons.wikimedia.org/wiki/File:Bunch_of_bananas_on_sale.jpg
+      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Bunch_of_bananas_on_sale.jpg/960px-Bunch_of_bananas_on_sale.jpg',
+      variants: [{ sku: 'GRO-BANANA-BUNCH', attributes: { size: '~1.5kg bunch' }, priceMinor: 199, onHand: 90 }]
+    },
+    {
+      name: 'Fresh Mandarin Oranges (Bag)',
+      slug: 'fresh-mandarin-oranges-bag',
+      categorySlug: 'groceries',
+      brandSlug: 'freshfields-market',
+      sellerIndex: 2,
+      description: 'A bag of sweet, juicy mandarin oranges.',
+      // Pile of mandarin oranges on red cloth, Indonesia, Wikimedia Commons, CC BY-SA 4.0, photo by Undeka 11:
+      // https://commons.wikimedia.org/wiki/File:Pile_of_mandarin_oranges_on_red_cloth,_Indonesia.jpg
+      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2f/Pile_of_mandarin_oranges_on_red_cloth%2C_Indonesia.jpg/960px-Pile_of_mandarin_oranges_on_red_cloth%2C_Indonesia.jpg',
+      variants: [{ sku: 'GRO-MANDARIN-1KG', attributes: { size: '1kg bag' }, priceMinor: 449, onHand: 55 }]
+    },
+    // --- Beauty, brandSlug pureglow, sellerIndex 1 (Circuit Supply, matching the existing serum entry) ---
+    {
+      name: 'Everyday Volumizing Shampoo',
+      slug: 'everyday-volumizing-shampoo',
+      categorySlug: 'beauty',
+      brandSlug: 'pureglow',
+      sellerIndex: 1,
+      description: 'A sulfate-free daily shampoo that adds volume without weighing hair down.',
+      // Shampoo Bottle made of PLA-Blend Bio-Flex, Wikimedia Commons, CC BY-SA 2.0 de, photo by F. Kesselring, FKuR Willich:
+      // https://commons.wikimedia.org/wiki/File:Shampoo_Bottle_made_of_PLA-Blend_Bio-Flex.jpg
+      imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/c/c4/Shampoo_Bottle_made_of_PLA-Blend_Bio-Flex.jpg',
+      variants: [{ sku: 'BTY-SHMP-300', attributes: { size: '300ml' }, priceMinor: 899, onHand: 60 }]
+    },
+    {
+      name: 'Floral Eau de Parfum',
+      slug: 'floral-eau-de-parfum',
+      categorySlug: 'beauty',
+      brandSlug: 'pureglow',
+      sellerIndex: 1,
+      description: 'A light floral eau de parfum in a glass flacon, suited to everyday wear.',
+      // Perfume bottle (white flower perfume bottle), CC0, via Rawpixel/Openverse:
+      // https://www.rawpixel.com/image/6060896 (no attribution required)
+      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9zdGF0aWMvaW1hZ2Uvd2Vic2l0ZS8yMDIyLTA0L2xyL2ZycGVyZnVtZV9ib3R0bGVfZ2xhc3NfY29zbWV0aWNzXzctaW1hZ2Uta3liYXdzMTYuanBn.jpg',
+      variants: [{ sku: 'BTY-PERF-50', attributes: { size: '50ml' }, priceMinor: 3499, onHand: 24 }]
+    },
+    {
+      name: 'Purifying Charcoal Face Mask',
+      slug: 'purifying-charcoal-face-mask',
+      categorySlug: 'beauty',
+      brandSlug: 'pureglow',
+      sellerIndex: 1,
+      description: 'A deep-cleansing activated charcoal mask that draws out impurities.',
+      // Activated charcoal mask in glass jar, CC0, via Rawpixel/Openverse (no attribution required).
+      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA0L2JzODk1LWltYWdlLmpwZw.jpg',
+      variants: [{ sku: 'BTY-MASK-50', attributes: { size: '50g' }, priceMinor: 1499, onHand: 45 }]
+    },
+    {
+      name: 'Tinted Rose Lip Balm',
+      slug: 'tinted-rose-lip-balm',
+      categorySlug: 'beauty',
+      brandSlug: 'pureglow',
+      sellerIndex: 1,
+      description: 'A moisturizing lip balm with a sheer rose tint.',
+      // Pink homemade-style lip balm pot, CC0, via Rawpixel/Openverse (no attribution required).
+      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9zdGF0aWMvaW1hZ2Uvd2Vic2l0ZS8yMDIyLTA0L2xyL2JzMTAzNy1pbWFnZS1rd3Z4NHRmby5qcGc.jpg',
+      variants: [{ sku: 'BTY-LIPB-ROSE', attributes: { shade: 'Rose' }, priceMinor: 599, onHand: 90 }]
+    },
+    // --- Books, brandSlug lantern-press, sellerIndex 0 (Northwind Trading Co.) ---
+    {
+      name: 'Linen Hardcover Journal',
+      slug: 'linen-hardcover-journal',
+      categorySlug: 'books',
+      brandSlug: 'lantern-press',
+      sellerIndex: 0,
+      description: 'A blank hardcover journal bound in natural linen cloth, for notes or a daily diary.',
+      // White hardcover book on wood, CC0, via Rawpixel/Openverse (no attribution required).
+      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA2L3Vwd2s2MjEyMjE0My13aWtpbWVkaWEtaW1hZ2Uta293bm9yZWUuanBn.jpg',
+      variants: [{ sku: 'BK-JRNL-LINEN', attributes: {}, priceMinor: 2499, onHand: 40 }]
+    },
+    {
+      name: 'Golden-Paged Classic Novel',
+      slug: 'golden-paged-classic-novel',
+      categorySlug: 'books',
+      brandSlug: 'lantern-press',
+      sellerIndex: 0,
+      description: 'A gift-edition hardcover novel with gilded page edges.',
+      // Open book with gilded pages, CC0, via Rawpixel/Openverse (no attribution required).
+      imageUrl: 'https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcHg0Mjc3NjItaW1hZ2Uta3d2eG9kanUuanBn.jpg',
+      variants: [{ sku: 'BK-NOVL-GOLD', attributes: {}, priceMinor: 1299, onHand: 55 }]
+    },
+    {
+      name: 'Ruled Pocket Notebook',
+      slug: 'ruled-pocket-notebook',
+      categorySlug: 'books',
+      brandSlug: 'lantern-press',
+      sellerIndex: 0,
+      description: 'A ruled pocket notebook with an elastic closure band, sized for a bag or coat pocket.',
+      // Open ruled notebook with pen on a desk, CC0, via Rawpixel/Openverse (no attribution required).
+      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9zdGF0aWMvaW1hZ2Uvd2Vic2l0ZS8yMDIyLTA0L2xyL3B4ODYwMTgxLWltYWdlLWt3dnV1bmI0LmpwZw.jpg',
+      variants: [{ sku: 'BK-NTBK-RULED', attributes: {}, priceMinor: 799, onHand: 75 }]
+    },
+    {
+      name: 'Illustrated Family Cookbook',
+      slug: 'illustrated-family-cookbook',
+      categorySlug: 'books',
+      brandSlug: 'lantern-press',
+      sellerIndex: 0,
+      description: 'A numbered-recipe family cookbook covering everyday home cooking.',
+      // Open recipe book with kitchen herbs, CC0, via Rawpixel/Openverse (no attribution required).
+      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9zdGF0aWMvaW1hZ2Uvd2Vic2l0ZS8yMDIyLTA0L2xyL3B4NjI4Mzg5LWltYWdlLWt3dnZkZWNoLmpwZw.jpg',
+      variants: [{ sku: 'BK-COOK-FAM', attributes: {}, priceMinor: 1999, onHand: 38 }]
+    },
+    {
+      name: 'Assorted Paperback Fiction Bundle',
+      slug: 'assorted-paperback-fiction-bundle',
+      categorySlug: 'books',
+      brandSlug: 'lantern-press',
+      sellerIndex: 0,
+      description: 'A curated bundle of five assorted paperback fiction titles.',
+      // Stacks of colorful paperback books in a bookshop, CC0, via Rawpixel/Openverse (no attribution required).
+      imageUrl: 'https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdXB3azYxODA2ODQ5LXdpa2ltZWRpYS1pbWFnZS1rb3dxNDdhNi5qcGc.jpg',
+      variants: [{ sku: 'BK-BUNDLE-5PK', attributes: { size: '5-book set' }, priceMinor: 2299, onHand: 22 }]
+    },
+    // --- Electronics, brandSlug circuit-and-co, sellerIndex 1 (Circuit Supply, matching the existing headphones) ---
+    {
+      name: 'Portable Bluetooth Speaker',
+      slug: 'portable-bluetooth-speaker',
+      categorySlug: 'electronics',
+      brandSlug: 'circuit-and-co',
+      sellerIndex: 1,
+      description: 'A compact portable Bluetooth speaker for everyday listening.',
+      // Black portable Bluetooth speaker on a desk, CC0, via Rawpixel/Openverse (no attribution required).
+      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9zdGF0aWMvaW1hZ2Uvd2Vic2l0ZS8yMDIyLTA0L2xyL2JzNDczLWltYWdlLWt3dng1YWN3LmpwZw.jpg',
+      variants: [{ sku: 'ELC-SPKR-BLK', attributes: { color: 'Black' }, priceMinor: 3999, onHand: 32 }]
+    },
+    {
+      name: 'Round Dial Smartwatch',
+      slug: 'round-dial-smartwatch',
+      categorySlug: 'electronics',
+      brandSlug: 'circuit-and-co',
+      sellerIndex: 1,
+      description: 'A round-dial smartwatch with a metal band and customizable watch faces.',
+      // Round smartwatch on wrist, CC0, via Rawpixel/Openverse (no attribution required).
+      imageUrl: 'https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcHg2NDE0MzMtaW1hZ2Uta3d2eGxwcmIuanBn.jpg',
+      variants: [{ sku: 'ELC-WATCH-RND', attributes: {}, priceMinor: 8999, onHand: 17 }]
+    },
+    {
+      name: 'Wireless Optical Mouse',
+      slug: 'wireless-optical-mouse',
+      categorySlug: 'electronics',
+      brandSlug: 'circuit-and-co',
+      sellerIndex: 1,
+      description: 'A 2.4GHz wireless optical mouse with a comfortable contoured grip.',
+      // Black wireless computer mouse on a desk, CC0, via Rawpixel/Openverse (no attribution required).
+      imageUrl: 'https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvZnJjb21wdXRlcl9tb3VzZV93aXJlbGVzc19kZXZpY2UtaW1hZ2Uta3ljaGxjaWwuanBn.jpg',
+      variants: [{ sku: 'ELC-MOUSE-BLK', attributes: { color: 'Black' }, priceMinor: 1999, onHand: 50 }]
+    },
+    {
+      name: 'USB-C Fast Wall Charger',
+      slug: 'usb-c-fast-wall-charger',
+      categorySlug: 'electronics',
+      brandSlug: 'circuit-and-co',
+      sellerIndex: 1,
+      description: 'A compact USB-C fast-charging wall adapter with a 1.2m braided cable.',
+      // White USB-C wall charger and cable, CC0, via Rawpixel/Openverse (no attribution required).
+      imageUrl: 'https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcHgxNTk1MTcwLWltYWdlLWt3dnhxcmFnLmpwZw.jpg',
+      variants: [{ sku: 'ELC-CHRG-USBC', attributes: {}, priceMinor: 2499, onHand: 65 }]
+    },
+    // --- Home, brandSlug hearthhome, sellerIndex 0 (Northwind Trading Co., matching the existing coffee set) ---
+    {
+      name: 'Soy Wax Glass Jar Candle',
+      slug: 'soy-wax-glass-jar-candle',
+      categorySlug: 'home',
+      brandSlug: 'hearthhome',
+      sellerIndex: 0,
+      description: 'A hand-poured soy wax candle in a clear glass jar with a cotton wick.',
+      // Single plain soy candle, Wikimedia Commons, CC BY-SA 2.0, photo by mikehipp:
+      // https://commons.wikimedia.org/wiki/File:Single_plain_soy_candle.jpg
+      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/Single_plain_soy_candle.jpg/960px-Single_plain_soy_candle.jpg',
+      variants: [{ sku: 'HOM-CNDL-SOY', attributes: {}, priceMinor: 1699, onHand: 55 }]
+    },
+    {
+      name: 'Multicolor Cotton Bath Towel Set',
+      slug: 'multicolor-cotton-bath-towel-set',
+      categorySlug: 'home',
+      brandSlug: 'hearthhome',
+      sellerIndex: 0,
+      description: 'A five-piece set of soft cotton hand towels in assorted colors.',
+      // Zusammengelegte Handtücher (folded towels), Wikimedia Commons, public domain, photo by User:Mattes:
+      // https://commons.wikimedia.org/wiki/File:Zusammengelegte_Handt%C3%BCcher.jpg
+      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Zusammengelegte_Handt%C3%BCcher.jpg/960px-Zusammengelegte_Handt%C3%BCcher.jpg',
+      variants: [{ sku: 'HOM-TWL-5PK', attributes: { size: '5-piece set' }, priceMinor: 2999, onHand: 34 }]
+    },
+    {
+      name: 'Hand-Glazed Ceramic Vase',
+      slug: 'hand-glazed-ceramic-vase',
+      categorySlug: 'home',
+      brandSlug: 'hearthhome',
+      sellerIndex: 0,
+      description: 'A hand-glazed ceramic vase with a rounded body, suited to dried or fresh stems.',
+      // Elegant minimalist white ceramic vase, CC0, via Rawpixel/Openverse (no attribution required).
+      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTAyL2xhY21hMjQ5MjI4LWltYWdlLmpwZw.jpg',
+      variants: [{ sku: 'HOM-VASE-CER', attributes: {}, priceMinor: 2799, onHand: 26 }]
+    },
+    {
+      name: 'Copper Pendant Bedside Lamp',
+      slug: 'copper-pendant-bedside-lamp',
+      categorySlug: 'home',
+      brandSlug: 'hearthhome',
+      sellerIndex: 0,
+      description: 'A minimalist copper-finish pendant lamp for a nightstand or reading corner.',
+      // Copper pendant bulb lamp on a nightstand, CC0, via Rawpixel/Openverse (no attribution required).
+      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L2JzMTM3MS1pbWFnZS1rd3Z5bG91Yy5qcGc.jpg',
+      variants: [{ sku: 'HOM-LAMP-CPR', attributes: {}, priceMinor: 4499, onHand: 19 }]
+    },
+    // --- Sports, brandSlug trailforge-sports, sellerIndex 0 (Northwind Trading Co.) ---
+    {
+      name: 'Non-Slip Yoga Mat',
+      slug: 'non-slip-yoga-mat',
+      categorySlug: 'sports',
+      brandSlug: 'trailforge-sports',
+      sellerIndex: 0,
+      description: 'A 5mm non-slip yoga mat with a textured surface for grip.',
+      // Rolled teal yoga mat, CC0, via Rawpixel/Openverse (no attribution required).
+      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA0L2JzMTIwLWltYWdlLmpwZw.jpg',
+      variants: [{ sku: 'SPT-YOGA-TEAL', attributes: { color: 'Teal' }, priceMinor: 1899, onHand: 48 }]
+    },
+    {
+      name: 'Adjustable Dumbbell Set',
+      slug: 'adjustable-dumbbell-set',
+      categorySlug: 'sports',
+      brandSlug: 'trailforge-sports',
+      sellerIndex: 0,
+      description: 'A pair of adjustable-weight dumbbells for home strength training.',
+      // Adjustable dumbbells on a gym floor, CC0, via Rawpixel/Openverse (no attribution required).
+      imageUrl: 'https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcHg4MTY2MjUtaW1hZ2Uta3d2eGV0NGkuanBn.jpg',
+      variants: [{ sku: 'SPT-DMBL-PAIR', attributes: { size: 'Pair' }, priceMinor: 5499, onHand: 21 }]
+    },
+    {
+      name: 'Official Size Basketball',
+      slug: 'official-size-basketball',
+      categorySlug: 'sports',
+      brandSlug: 'trailforge-sports',
+      sellerIndex: 0,
+      description: 'An official size-7 basketball with a durable rubber cover for indoor or outdoor play.',
+      // Basketball on grass, CC0, via Rawpixel/Openverse (no attribution required).
+      imageUrl: 'https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvLWEwMTAtbWFya3Vzcy0wNTEwLmpwZw.jpg',
+      variants: [{ sku: 'SPT-BBALL-7', attributes: { size: '7' }, priceMinor: 2199, onHand: 40 }]
+    },
+    {
+      name: 'Insulated Sports Water Bottle',
+      slug: 'insulated-sports-water-bottle',
+      categorySlug: 'sports',
+      brandSlug: 'trailforge-sports',
+      sellerIndex: 0,
+      description: 'A leak-proof insulated water bottle with a flip-top straw lid.',
+      // Pink insulated sports water bottle, CC0, via Rawpixel/Openverse (no attribution required).
+      imageUrl: 'https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcHg4NTQ1MzgtaW1hZ2Uta3d5bzlmamguanBn.jpg',
+      variants: [{ sku: 'SPT-BTL-PINK', attributes: { color: 'Pink' }, priceMinor: 1199, onHand: 58 }]
+    },
+    {
+      name: 'Match Soccer Ball',
+      slug: 'match-soccer-ball',
+      categorySlug: 'sports',
+      brandSlug: 'trailforge-sports',
+      sellerIndex: 0,
+      description: 'A size-5 match-quality soccer ball for training or play.',
+      // Soccer ball on a grass field, CC0, via Rawpixel/Openverse (no attribution required).
+      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9zdGF0aWMvaW1hZ2Uvd2Vic2l0ZS8yMDIyLTA0L2xyL3B4MTMzMjkxOC1pbWFnZS1rd3Z3MHhoMy5qcGc.jpg',
+      variants: [{ sku: 'SPT-SOCCER-5', attributes: { size: '5' }, priceMinor: 1999, onHand: 44 }]
     }
   ];
 
