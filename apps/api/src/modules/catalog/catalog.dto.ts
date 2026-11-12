@@ -3,6 +3,7 @@ import type { BrandDocument } from '../../models/brand.model.js';
 import type { ProductDocument } from '../../models/product.model.js';
 import type { ProductVariantDocument } from '../../models/productVariant.model.js';
 import type { ProductQuestionDocument } from '../../models/productQuestion.model.js';
+import type { PromotionDocument } from '../../models/promotion.model.js';
 import { toPublicId } from '../../utils/ids.js';
 
 export function toCategoryDto(category: CategoryDocument) {
@@ -80,5 +81,30 @@ export function toQuestionDto(question: ProductQuestionDocument) {
       answeredAt: a.answeredAt.toISOString()
     })),
     createdAt: question.createdAt.toISOString()
+  };
+}
+
+/**
+ * Public shape of a running campaign. Internal bookkeeping (usageLimit,
+ * usedCount, perUserLimit, priority) stays server-side; the storefront only
+ * needs what it takes to render and scope the offer.
+ */
+export function toPromotionDto(promotion: PromotionDocument) {
+  return {
+    id: toPublicId(promotion._id),
+    name: promotion.name,
+    description: promotion.description,
+    discountType: promotion.discountType,
+    percentageBasisPoints: promotion.percentageBasisPoints ?? null,
+    discountValue: promotion.discountValue
+      ? { amountMinor: promotion.discountValue.amountMinor, currency: promotion.discountValue.currency }
+      : null,
+    minOrderAmount: promotion.minOrderAmount
+      ? { amountMinor: promotion.minOrderAmount.amountMinor, currency: promotion.minOrderAmount.currency }
+      : null,
+    eligibleCategoryIds: promotion.eligibleCategoryIds.map((id) => toPublicId(id)),
+    eligibleProductIds: promotion.eligibleProductIds.map((id) => toPublicId(id)),
+    startsAt: promotion.startsAt.toISOString(),
+    expiresAt: promotion.expiresAt.toISOString()
   };
 }

@@ -18,6 +18,7 @@ export const catalogRouter = Router();
 
 catalogRouter.get('/categories', asyncHandler(controller.listCategoriesHandler));
 catalogRouter.get('/brands', asyncHandler(controller.listBrandsHandler));
+catalogRouter.get('/promotions', asyncHandler(controller.listPromotionsHandler));
 
 catalogRouter.get(
   '/products',

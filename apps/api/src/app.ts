@@ -1,3 +1,5 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import express, { type Express } from 'express';
 import cookieParser from 'cookie-parser';
 import { requestIdMiddleware } from './http/middleware/requestId.js';
@@ -25,6 +27,8 @@ import { notificationRouter } from './modules/notifications/notification.routes.
 import { aiRouter } from './modules/ai/ai.routes.js';
 
 const MAX_BODY_SIZE = '1mb';
+/** `public/` holds the seeded catalog cut-outs; this file lives in src/, so go up one. */
+const PUBLIC_DIRECTORY = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'public');
 
 export function createApp(): Express {
   const app = express();
@@ -50,6 +54,10 @@ export function createApp(): Express {
   });
   app.use(cookieParser());
   app.use(sanitizeInputMiddleware);
+
+  // Static catalog imagery (see db/seed/run.ts). There is still no upload/object-storage
+  // endpoint — these are fixture assets committed with the seed, not user uploads.
+  app.use('/static', express.static(PUBLIC_DIRECTORY, { maxAge: '1h', fallthrough: true }));
 
   mountOpenApiDocs(app);
 

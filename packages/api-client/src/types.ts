@@ -56,6 +56,20 @@ export interface BrandDto {
   description?: string;
 }
 
+export interface PromotionDto {
+  id: string;
+  name: string;
+  description?: string;
+  discountType: string;
+  percentageBasisPoints: number | null;
+  discountValue: Money | null;
+  minOrderAmount: Money | null;
+  eligibleCategoryIds: string[];
+  eligibleProductIds: string[];
+  startsAt: string;
+  expiresAt: string;
+}
+
 export interface ProductImageDto {
   storageKey: string;
   altText?: string;

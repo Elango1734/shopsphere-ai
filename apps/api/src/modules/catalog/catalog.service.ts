@@ -1,5 +1,6 @@
 import type { ProductListQueryInput } from '@shopsphere/validation';
 import { CategoryModel } from '../../models/category.model.js';
+import { PromotionModel } from '../../models/promotion.model.js';
 import { BrandModel } from '../../models/brand.model.js';
 import { ProductVariantModel } from '../../models/productVariant.model.js';
 import { ProductQuestionModel, type ProductQuestionDocument } from '../../models/productQuestion.model.js';
@@ -16,6 +17,19 @@ export async function listBrands() {
   return BrandModel.find({ isActive: true }).sort({ name: 1 });
 }
 
+/**
+ * Campaign discounts that are live right now. Promotions apply automatically at
+ * checkout (pricing.service.ts) with no customer-entered code, so the storefront
+ * needs to be able to show what is currently running — hence this public,
+ * active-and-in-window-only projection. Coupons stay private: they need a code.
+ */
+export async function listActivePromotions() {
+  const now = new Date();
+  return PromotionModel.find({ isActive: true, startsAt: { $lte: now }, expiresAt: { $gt: now } })
+    .sort({ priority: -1, expiresAt: 1 })
+    .limit(20);
+}
+
 export async function listProducts(query: ProductListQueryInput) {
   const { products, totalItems } = await listPublishedProducts(
     {
@@ -25,7 +39,8 @@ export async function listProducts(query: ProductListQueryInput) {
       ...(query.minPriceMinor != null ? { minPriceMinor: query.minPriceMinor } : {}),
       ...(query.maxPriceMinor != null ? { maxPriceMinor: query.maxPriceMinor } : {}),
       ...(query.q ? { searchText: query.q } : {}),
-      ...(query.inStockOnly != null ? { inStockOnly: query.inStockOnly } : {})
+      ...(query.inStockOnly != null ? { inStockOnly: query.inStockOnly } : {}),
+      ...(query.minRating != null ? { minRating: query.minRating } : {})
     },
     query.page,
     query.pageSize,
@@ -36,9 +51,13 @@ export async function listProducts(query: ProductListQueryInput) {
 
 function buildSort(sort: string | undefined, order: 'asc' | 'desc'): Record<string, 1 | -1> {
   const direction = order === 'asc' ? 1 : -1;
-  const allowed = new Set(['createdAt', 'minPriceMinor', 'name']);
+  // `ratingAverage` and `ratingCount` map onto the cached aggregate the product
+  // document carries, so "most popular" orderings are real rather than silently
+  // falling through to newest-first.
+  const allowed = new Set(['createdAt', 'minPriceMinor', 'name', 'ratingAverage', 'ratingCount']);
   const field = sort && allowed.has(sort) ? sort : 'createdAt';
-  return { [field]: direction };
+  const path = field === 'ratingAverage' ? 'ratingAggregate.average' : field === 'ratingCount' ? 'ratingAggregate.count' : field;
+  return { [path]: direction };
 }
 
 export async function getProductDetail(slug: string) {

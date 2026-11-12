@@ -219,17 +219,25 @@ interface SeedProductDef {
   sellerIndex: number;
   description: string;
   /**
-   * A specific, hand-picked, verified-resolving photo that actually depicts this product
-   * (a real t-shirt, real over-ear headphones, a real ceramic pour-over dripper, a real
-   * serum-with-dropper bottle) — not a random/generic stock photo. Not a real upload
-   * (apps/api has no upload/object-storage endpoint — see README's known limitations);
-   * these are Wikimedia Commons (CC BY / CC BY-SA, attribution in the comment below each
-   * URL) and Pexels (free license) CDN links, chosen because both host images under terms
-   * that permit this kind of reuse and serve them from a stable, always-on CDN.
+   * A specific, hand-picked photo that actually depicts this product (a real t-shirt, real
+   * over-ear headphones, a real ceramic pour-over dripper, a real serum-with-dropper bottle)
+   * — not a random/generic stock photo.
+   *
+   * Each one is served from this API's own `public/products/` as an 800px-square PNG whose
+   * background has been removed, so the catalog renders as consistent cut-outs on whatever
+   * surface the client paints behind them (the mobile app's product tiles are a grey panel).
+   * Still not a real upload — apps/api has no upload/object-storage endpoint (see README's
+   * known limitations) — these are fixture assets committed alongside the seed.
+   *
+   * Every cut-out is a derivative of a freely licensed original (Wikimedia Commons CC BY /
+   * CC BY-SA / CC0 / public domain, or Pexels free license); the original is credited in the
+   * comment above each URL, and those credits carry over to the derivative.
    */
   imageUrl: string;
   variants: Array<{ sku: string; attributes: Record<string, string>; priceMinor: number; onHand: number }>;
 }
+
+const assetBaseUrl = getEnv().ASSET_BASE_URL.replace(/\/$/, '');
 
 async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories>>['categories'], brands: Awaited<ReturnType<typeof seedBrands>>['brands'], sellers: Awaited<ReturnType<typeof seedSellers>>['sellers']) {
   const bySlug = <T extends { slug: string }>(arr: T[], slug: string) => {
@@ -247,7 +255,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       sellerIndex: 0,
       description: 'A breathable everyday cotton t-shirt.',
       // T-shirt-black.jpg, Wikimedia Commons, CC BY-SA 2.5: https://commons.wikimedia.org/wiki/File:T-shirt-black.jpg
-      imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/08/T-shirt-black.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/classic-cotton-tee.png`,
       variants: [
         { sku: 'TEE-BLK-M', attributes: { color: 'Black', size: 'M' }, priceMinor: 1999, onHand: 40 },
         { sku: 'TEE-BLK-L', attributes: { color: 'Black', size: 'L' }, priceMinor: 1999, onHand: 25 },
@@ -261,10 +269,9 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       brandSlug: 'circuit-and-co',
       sellerIndex: 1,
       description: 'Over-ear wireless headphones with active noise cancellation.',
-      // Sennheiser HD 598 over-ear headphones, Wikimedia Commons, CC BY 2.0, photo by Tony Webster:
-      // https://commons.wikimedia.org/wiki/File:Sennheiser_HD_598_over-ear_headphones_(31514940057).jpg
-      imageUrl:
-        'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/Sennheiser_HD_598_over-ear_headphones_%2831514940057%29.jpg/960px-Sennheiser_HD_598_over-ear_headphones_%2831514940057%29.jpg',
+      // Cut-out of Action-Max-Stereo-Headphones.jpg, Wikimedia Commons, Public domain, by Evan-Amos:
+      // https://commons.wikimedia.org/wiki/File%3AAction-Max-Stereo-Headphones.jpg
+      imageUrl: `${assetBaseUrl}/static/products/wireless-noise-cancelling-headphones.png`,
       variants: [
         { sku: 'HDPH-BLK', attributes: { color: 'Black' }, priceMinor: 14999, onHand: 15 },
         { sku: 'HDPH-SLV', attributes: { color: 'Silver' }, priceMinor: 14999, onHand: 8 }
@@ -279,7 +286,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       description: 'A hand-glazed ceramic pour-over dripper and mug set.',
       // Melitta Ceramic Coffee Dripper, Wikimedia Commons, CC BY-SA 4.0, photo by Olga Ernst:
       // https://commons.wikimedia.org/wiki/File:Melitta_Ceramic_Coffee_Dripper.jpg
-      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Melitta_Ceramic_Coffee_Dripper.jpg/960px-Melitta_Ceramic_Coffee_Dripper.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/ceramic-pour-over-coffee-set.png`,
       variants: [{ sku: 'COFFEE-SET-01', attributes: {}, priceMinor: 3499, onHand: 60 }]
     },
     {
@@ -291,7 +298,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       description: 'A lightweight daily serum with 10% vitamin C.',
       // Minimalist skincare serum bottle flat lay, Pexels, free license, photo by N H Corp:
       // https://www.pexels.com/photo/minimalist-skincare-serum-bottle-flat-lay-31251033/
-      imageUrl: 'https://images.pexels.com/photos/31251033/pexels-photo-31251033.jpeg?cs=tinysrgb&w=900',
+      imageUrl: `${assetBaseUrl}/static/products/hydrating-vitamin-c-serum.png`,
       variants: [{ sku: 'SERUM-30ML', attributes: { size: '30ml' }, priceMinor: 2599, onHand: 100 }]
     },
     // --- Fashion: dresses + one accessory + one pair of shoes, sellerIndex 0 (Northwind Trading Co.) ---
@@ -304,7 +311,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       description: 'A fitted black evening dress in flowing jersey, cut for a flattering silhouette day to night.',
       // Little Black Dress (Unsplash), Wikimedia Commons, CC0, photo by Kira Ikonnikova:
       // https://commons.wikimedia.org/wiki/File:Little_Black_Dress_(Unsplash).jpg
-      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Little_Black_Dress_%28Unsplash%29.jpg/960px-Little_Black_Dress_%28Unsplash%29.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/little-black-evening-dress.png`,
       variants: [
         { sku: 'DRS-BLK-S', attributes: { color: 'Black', size: 'S' }, priceMinor: 4999, onHand: 30 },
         { sku: 'DRS-BLK-M', attributes: { color: 'Black', size: 'M' }, priceMinor: 4999, onHand: 35 },
@@ -320,7 +327,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       description: 'A lightweight floral midi dress with adjustable straps, made for warm-weather days.',
       // Laughing woman in floral dress (Unsplash), Wikimedia Commons, CC0, photo by Brooke Cagle:
       // https://commons.wikimedia.org/wiki/File:Laughing_woman_in_floral_dress_(Unsplash).jpg
-      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/Laughing_woman_in_floral_dress_%28Unsplash%29.jpg/960px-Laughing_woman_in_floral_dress_%28Unsplash%29.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/floral-print-summer-dress.png`,
       variants: [
         { sku: 'DRS-FLR-S', attributes: { color: 'Floral', size: 'S' }, priceMinor: 3899, onHand: 28 },
         { sku: 'DRS-FLR-M', attributes: { color: 'Floral', size: 'M' }, priceMinor: 3899, onHand: 32 },
@@ -336,7 +343,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       description: 'A patterned midi dress with a fitted bodice and a flared skirt, suited to both day and evening wear.',
       // Summer dress, Wikimedia Commons, public domain (USAID Africa Bureau):
       // https://commons.wikimedia.org/wiki/File:Summer_dress_(5634765615).jpg
-      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Summer_dress_%285634765615%29.jpg/960px-Summer_dress_%285634765615%29.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/patterned-midi-dress.png`,
       variants: [
         { sku: 'DRS-PTN-S', attributes: { size: 'S' }, priceMinor: 4499, onHand: 20 },
         { sku: 'DRS-PTN-M', attributes: { size: 'M' }, priceMinor: 4499, onHand: 24 },
@@ -352,7 +359,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       description: 'A hand-stitched full-grain leather satchel with an adjustable strap and a flap closure.',
       // Leather handbag by Les cuirs d'Agathe (DSC07738), Wikimedia Commons, CC BY 4.0, photo by Trougnouf (Benoit Brummer):
       // https://commons.wikimedia.org/wiki/File:Leather_handbag_by_Les_cuirs_d%27Agathe_(DSC07738).jpg
-      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Leather_handbag_by_Les_cuirs_d%27Agathe_%28DSC07738%29.jpg/960px-Leather_handbag_by_Les_cuirs_d%27Agathe_%28DSC07738%29.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/handcrafted-leather-satchel-bag.png`,
       variants: [{ sku: 'BAG-LTHR-COG', attributes: { color: 'Cognac' }, priceMinor: 8999, onHand: 15 }]
     },
     {
@@ -364,8 +371,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       description: 'Everyday platform canvas sneakers with a lace-up front and a durable rubber sole.',
       // Superga COTW LINEA UP & DOWN Sneaker, Wikimedia Commons, CC BY 2.0, photo by SPERA.de Designerschuhe:
       // https://commons.wikimedia.org/wiki/File:Superga_COTW_LINEA_UP_%26_DOWN_Sneaker_mit_Plateau_2790A_Canvas_wei%C3%9F_(white)_(1).jpg
-      imageUrl:
-        'https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Superga_COTW_LINEA_UP_%26_DOWN_Sneaker_mit_Plateau_2790A_Canvas_wei%C3%9F_%28white%29_%281%29.jpg/960px-Superga_COTW_LINEA_UP_%26_DOWN_Sneaker_mit_Plateau_2790A_Canvas_wei%C3%9F_%28white%29_%281%29.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/classic-white-canvas-sneakers.png`,
       variants: [
         { sku: 'SNK-WHT-8', attributes: { color: 'White', size: '8' }, priceMinor: 5499, onHand: 26 },
         { sku: 'SNK-WHT-9', attributes: { color: 'White', size: '9' }, priceMinor: 5499, onHand: 30 },
@@ -382,7 +388,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       description: 'A fresh-baked whole wheat loaf, sliced and ready for sandwiches or toast.',
       // Fresh made bread 05, Wikimedia Commons, CC BY-SA 4.0, photo by FranHogan:
       // https://commons.wikimedia.org/wiki/File:Fresh_made_bread_05.jpg
-      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/Fresh_made_bread_05.jpg/960px-Fresh_made_bread_05.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/sliced-whole-wheat-bread.png`,
       variants: [{ sku: 'GRO-BREAD-WW', attributes: { size: '680g loaf' }, priceMinor: 349, onHand: 80 }]
     },
     {
@@ -394,7 +400,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       description: 'A dozen farm-fresh grade-A eggs, carton-packed for safe delivery.',
       // Egg cartons with chicken eggs 03, Wikimedia Commons, CC BY-SA 4.0, photo by Krzysztof Golik:
       // https://commons.wikimedia.org/wiki/File:Egg_cartons_with_chicken_eggs_03.jpg
-      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/Egg_cartons_with_chicken_eggs_03.jpg/960px-Egg_cartons_with_chicken_eggs_03.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/farm-fresh-eggs-dozen.png`,
       variants: [{ sku: 'GRO-EGGS-12', attributes: { size: '12-count' }, priceMinor: 429, onHand: 70 }]
     },
     {
@@ -404,10 +410,9 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       brandSlug: 'freshfields-market',
       sellerIndex: 2,
       description: 'Three crisp, ripe red bell peppers, sold by the pack.',
-      // Fresh red bell peppers arranged in a wooden crate on a table, Wikimedia Commons, CC BY 2.0, photo by Shixart1985:
-      // https://commons.wikimedia.org/wiki/File:Fresh_red_bell_peppers_arranged_in_a_wooden_crate_on_a_table.jpg
-      imageUrl:
-        'https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Fresh_red_bell_peppers_arranged_in_a_wooden_crate_on_a_table.jpg/960px-Fresh_red_bell_peppers_arranged_in_a_wooden_crate_on_a_table.jpg',
+      // Cut-out of Red bell pepper.jpg, Wikimedia Commons, CC BY-SA 4.0, by AntanO:
+      // https://commons.wikimedia.org/wiki/File%3ARed_bell_pepper.jpg
+      imageUrl: `${assetBaseUrl}/static/products/fresh-red-bell-peppers-3-pack.png`,
       variants: [{ sku: 'GRO-PEPPER-3PK', attributes: { size: '3-pack' }, priceMinor: 399, onHand: 65 }]
     },
     {
@@ -419,7 +424,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       description: 'A bunch of ripe, ready-to-eat bananas.',
       // Bunch of bananas on sale, Wikimedia Commons, CC0, photo by Wilfredor:
       // https://commons.wikimedia.org/wiki/File:Bunch_of_bananas_on_sale.jpg
-      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Bunch_of_bananas_on_sale.jpg/960px-Bunch_of_bananas_on_sale.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/fresh-bananas-bunch.png`,
       variants: [{ sku: 'GRO-BANANA-BUNCH', attributes: { size: '~1.5kg bunch' }, priceMinor: 199, onHand: 90 }]
     },
     {
@@ -431,7 +436,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       description: 'A bag of sweet, juicy mandarin oranges.',
       // Pile of mandarin oranges on red cloth, Indonesia, Wikimedia Commons, CC BY-SA 4.0, photo by Undeka 11:
       // https://commons.wikimedia.org/wiki/File:Pile_of_mandarin_oranges_on_red_cloth,_Indonesia.jpg
-      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2f/Pile_of_mandarin_oranges_on_red_cloth%2C_Indonesia.jpg/960px-Pile_of_mandarin_oranges_on_red_cloth%2C_Indonesia.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/fresh-mandarin-oranges-bag.png`,
       variants: [{ sku: 'GRO-MANDARIN-1KG', attributes: { size: '1kg bag' }, priceMinor: 449, onHand: 55 }]
     },
     // --- Beauty, brandSlug pureglow, sellerIndex 1 (Circuit Supply, matching the existing serum entry) ---
@@ -444,7 +449,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       description: 'A sulfate-free daily shampoo that adds volume without weighing hair down.',
       // Shampoo Bottle made of PLA-Blend Bio-Flex, Wikimedia Commons, CC BY-SA 2.0 de, photo by F. Kesselring, FKuR Willich:
       // https://commons.wikimedia.org/wiki/File:Shampoo_Bottle_made_of_PLA-Blend_Bio-Flex.jpg
-      imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/c/c4/Shampoo_Bottle_made_of_PLA-Blend_Bio-Flex.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/everyday-volumizing-shampoo.png`,
       variants: [{ sku: 'BTY-SHMP-300', attributes: { size: '300ml' }, priceMinor: 899, onHand: 60 }]
     },
     {
@@ -454,9 +459,9 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       brandSlug: 'pureglow',
       sellerIndex: 1,
       description: 'A light floral eau de parfum in a glass flacon, suited to everyday wear.',
-      // Perfume bottle (white flower perfume bottle), CC0, via Rawpixel/Openverse:
-      // https://www.rawpixel.com/image/6060896 (no attribution required)
-      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9zdGF0aWMvaW1hZ2Uvd2Vic2l0ZS8yMDIyLTA0L2xyL2ZycGVyZnVtZV9ib3R0bGVfZ2xhc3NfY29zbWV0aWNzXzctaW1hZ2Uta3liYXdzMTYuanBn.jpg',
+      // Cut-out of Rain - Eau de Parfum, by Clean classic 2.jpg, Wikimedia Commons, CC BY 4.0, by W.carter:
+      // https://commons.wikimedia.org/wiki/File%3ARain_-_Eau_de_Parfum%2C_by_Clean_classic_2.jpg
+      imageUrl: `${assetBaseUrl}/static/products/floral-eau-de-parfum.png`,
       variants: [{ sku: 'BTY-PERF-50', attributes: { size: '50ml' }, priceMinor: 3499, onHand: 24 }]
     },
     {
@@ -467,7 +472,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       sellerIndex: 1,
       description: 'A deep-cleansing activated charcoal mask that draws out impurities.',
       // Activated charcoal mask in glass jar, CC0, via Rawpixel/Openverse (no attribution required).
-      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA0L2JzODk1LWltYWdlLmpwZw.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/purifying-charcoal-face-mask.png`,
       variants: [{ sku: 'BTY-MASK-50', attributes: { size: '50g' }, priceMinor: 1499, onHand: 45 }]
     },
     {
@@ -478,7 +483,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       sellerIndex: 1,
       description: 'A moisturizing lip balm with a sheer rose tint.',
       // Pink homemade-style lip balm pot, CC0, via Rawpixel/Openverse (no attribution required).
-      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9zdGF0aWMvaW1hZ2Uvd2Vic2l0ZS8yMDIyLTA0L2xyL2JzMTAzNy1pbWFnZS1rd3Z4NHRmby5qcGc.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/tinted-rose-lip-balm.png`,
       variants: [{ sku: 'BTY-LIPB-ROSE', attributes: { shade: 'Rose' }, priceMinor: 599, onHand: 90 }]
     },
     // --- Books, brandSlug lantern-press, sellerIndex 0 (Northwind Trading Co.) ---
@@ -489,8 +494,9 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       brandSlug: 'lantern-press',
       sellerIndex: 0,
       description: 'A blank hardcover journal bound in natural linen cloth, for notes or a daily diary.',
-      // White hardcover book on wood, CC0, via Rawpixel/Openverse (no attribution required).
-      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA2L3Vwd2s2MjEyMjE0My13aWtpbWVkaWEtaW1hZ2Uta293bm9yZWUuanBn.jpg',
+      // Cut-out of " 12 - ITALY - MOLESKINE - notebook - pocket book - agenda 2012 3 black.JPG, Wikimedia Commons, CC BY-SA 3.0 it, by Pava:
+      // https://commons.wikimedia.org/wiki/File%3A%22_12_-_ITALY_-_MOLESKINE_-_notebook_-_pocket_book_-_agenda_2012_3_black.JPG
+      imageUrl: `${assetBaseUrl}/static/products/linen-hardcover-journal.png`,
       variants: [{ sku: 'BK-JRNL-LINEN', attributes: {}, priceMinor: 2499, onHand: 40 }]
     },
     {
@@ -501,7 +507,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       sellerIndex: 0,
       description: 'A gift-edition hardcover novel with gilded page edges.',
       // Open book with gilded pages, CC0, via Rawpixel/Openverse (no attribution required).
-      imageUrl: 'https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcHg0Mjc3NjItaW1hZ2Uta3d2eG9kanUuanBn.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/golden-paged-classic-novel.png`,
       variants: [{ sku: 'BK-NOVL-GOLD', attributes: {}, priceMinor: 1299, onHand: 55 }]
     },
     {
@@ -512,7 +518,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       sellerIndex: 0,
       description: 'A ruled pocket notebook with an elastic closure band, sized for a bag or coat pocket.',
       // Open ruled notebook with pen on a desk, CC0, via Rawpixel/Openverse (no attribution required).
-      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9zdGF0aWMvaW1hZ2Uvd2Vic2l0ZS8yMDIyLTA0L2xyL3B4ODYwMTgxLWltYWdlLWt3dnV1bmI0LmpwZw.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/ruled-pocket-notebook.png`,
       variants: [{ sku: 'BK-NTBK-RULED', attributes: {}, priceMinor: 799, onHand: 75 }]
     },
     {
@@ -522,8 +528,9 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       brandSlug: 'lantern-press',
       sellerIndex: 0,
       description: 'A numbered-recipe family cookbook covering everyday home cooking.',
-      // Open recipe book with kitchen herbs, CC0, via Rawpixel/Openverse (no attribution required).
-      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9zdGF0aWMvaW1hZ2Uvd2Vic2l0ZS8yMDIyLTA0L2xyL3B4NjI4Mzg5LWltYWdlLWt3dnZkZWNoLmpwZw.jpg',
+      // Cut-out of Mrs. Welch's Cookbook, published in 1884.jpg, Wikimedia Commons, Public domain, by Unknown authorUnknown author:
+      // https://commons.wikimedia.org/wiki/File%3AMrs._Welch%27s_Cookbook%2C_published_in_1884.jpg
+      imageUrl: `${assetBaseUrl}/static/products/illustrated-family-cookbook.png`,
       variants: [{ sku: 'BK-COOK-FAM', attributes: {}, priceMinor: 1999, onHand: 38 }]
     },
     {
@@ -533,8 +540,9 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       brandSlug: 'lantern-press',
       sellerIndex: 0,
       description: 'A curated bundle of five assorted paperback fiction titles.',
-      // Stacks of colorful paperback books in a bookshop, CC0, via Rawpixel/Openverse (no attribution required).
-      imageUrl: 'https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdXB3azYxODA2ODQ5LXdpa2ltZWRpYS1pbWFnZS1rb3dxNDdhNi5qcGc.jpg',
+      // Cut-out of Books-on-Table-SGBerlin.png, Wikimedia Commons, CC BY-SA 4.0, by Studio GOOD Berlin:
+      // https://commons.wikimedia.org/wiki/File%3ABooks-on-Table-SGBerlin.png
+      imageUrl: `${assetBaseUrl}/static/products/assorted-paperback-fiction-bundle.png`,
       variants: [{ sku: 'BK-BUNDLE-5PK', attributes: { size: '5-book set' }, priceMinor: 2299, onHand: 22 }]
     },
     // --- Electronics, brandSlug circuit-and-co, sellerIndex 1 (Circuit Supply, matching the existing headphones) ---
@@ -545,8 +553,9 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       brandSlug: 'circuit-and-co',
       sellerIndex: 1,
       description: 'A compact portable Bluetooth speaker for everyday listening.',
-      // Black portable Bluetooth speaker on a desk, CC0, via Rawpixel/Openverse (no attribution required).
-      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9zdGF0aWMvaW1hZ2Uvd2Vic2l0ZS8yMDIyLTA0L2xyL2JzNDczLWltYWdlLWt3dng1YWN3LmpwZw.jpg',
+      // Cut-out of Jamo Power 250R Hi-Fi box from 1980s - with white frame.jpg, Wikimedia Commons, CC BY-SA 4.0, by Pittigrilli:
+      // https://commons.wikimedia.org/wiki/File%3AJamo_Power_250R_Hi-Fi_box_from_1980s_-_with_white_frame.jpg
+      imageUrl: `${assetBaseUrl}/static/products/portable-bluetooth-speaker.png`,
       variants: [{ sku: 'ELC-SPKR-BLK', attributes: { color: 'Black' }, priceMinor: 3999, onHand: 32 }]
     },
     {
@@ -556,8 +565,9 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       brandSlug: 'circuit-and-co',
       sellerIndex: 1,
       description: 'A round-dial smartwatch with a metal band and customizable watch faces.',
-      // Round smartwatch on wrist, CC0, via Rawpixel/Openverse (no attribution required).
-      imageUrl: 'https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcHg2NDE0MzMtaW1hZ2Uta3d2eGxwcmIuanBn.jpg',
+      // Cut-out of Montre en bois DWYT.jpg, Wikimedia Commons, CC BY-SA 4.0, by Dwyt watch:
+      // https://commons.wikimedia.org/wiki/File%3AMontre_en_bois_DWYT.jpg
+      imageUrl: `${assetBaseUrl}/static/products/round-dial-smartwatch.png`,
       variants: [{ sku: 'ELC-WATCH-RND', attributes: {}, priceMinor: 8999, onHand: 17 }]
     },
     {
@@ -568,7 +578,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       sellerIndex: 1,
       description: 'A 2.4GHz wireless optical mouse with a comfortable contoured grip.',
       // Black wireless computer mouse on a desk, CC0, via Rawpixel/Openverse (no attribution required).
-      imageUrl: 'https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvZnJjb21wdXRlcl9tb3VzZV93aXJlbGVzc19kZXZpY2UtaW1hZ2Uta3ljaGxjaWwuanBn.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/wireless-optical-mouse.png`,
       variants: [{ sku: 'ELC-MOUSE-BLK', attributes: { color: 'Black' }, priceMinor: 1999, onHand: 50 }]
     },
     {
@@ -578,8 +588,9 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       brandSlug: 'circuit-and-co',
       sellerIndex: 1,
       description: 'A compact USB-C fast-charging wall adapter with a 1.2m braided cable.',
-      // White USB-C wall charger and cable, CC0, via Rawpixel/Openverse (no attribution required).
-      imageUrl: 'https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcHgxNTk1MTcwLWltYWdlLWt3dnhxcmFnLmpwZw.jpg',
+      // Cut-out of Casio-PV-1000-Power-Supply.jpg, Wikimedia Commons, Public domain, by Evan-Amos:
+      // https://commons.wikimedia.org/wiki/File%3ACasio-PV-1000-Power-Supply.jpg
+      imageUrl: `${assetBaseUrl}/static/products/usb-c-fast-wall-charger.png`,
       variants: [{ sku: 'ELC-CHRG-USBC', attributes: {}, priceMinor: 2499, onHand: 65 }]
     },
     // --- Home, brandSlug hearthhome, sellerIndex 0 (Northwind Trading Co., matching the existing coffee set) ---
@@ -592,7 +603,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       description: 'A hand-poured soy wax candle in a clear glass jar with a cotton wick.',
       // Single plain soy candle, Wikimedia Commons, CC BY-SA 2.0, photo by mikehipp:
       // https://commons.wikimedia.org/wiki/File:Single_plain_soy_candle.jpg
-      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/Single_plain_soy_candle.jpg/960px-Single_plain_soy_candle.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/soy-wax-glass-jar-candle.png`,
       variants: [{ sku: 'HOM-CNDL-SOY', attributes: {}, priceMinor: 1699, onHand: 55 }]
     },
     {
@@ -604,7 +615,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       description: 'A five-piece set of soft cotton hand towels in assorted colors.',
       // Zusammengelegte Handtücher (folded towels), Wikimedia Commons, public domain, photo by User:Mattes:
       // https://commons.wikimedia.org/wiki/File:Zusammengelegte_Handt%C3%BCcher.jpg
-      imageUrl: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Zusammengelegte_Handt%C3%BCcher.jpg/960px-Zusammengelegte_Handt%C3%BCcher.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/multicolor-cotton-bath-towel-set.png`,
       variants: [{ sku: 'HOM-TWL-5PK', attributes: { size: '5-piece set' }, priceMinor: 2999, onHand: 34 }]
     },
     {
@@ -615,7 +626,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       sellerIndex: 0,
       description: 'A hand-glazed ceramic vase with a rounded body, suited to dried or fresh stems.',
       // Elegant minimalist white ceramic vase, CC0, via Rawpixel/Openverse (no attribution required).
-      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTAyL2xhY21hMjQ5MjI4LWltYWdlLmpwZw.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/hand-glazed-ceramic-vase.png`,
       variants: [{ sku: 'HOM-VASE-CER', attributes: {}, priceMinor: 2799, onHand: 26 }]
     },
     {
@@ -625,8 +636,9 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       brandSlug: 'hearthhome',
       sellerIndex: 0,
       description: 'A minimalist copper-finish pendant lamp for a nightstand or reading corner.',
-      // Copper pendant bulb lamp on a nightstand, CC0, via Rawpixel/Openverse (no attribution required).
-      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L2JzMTM3MS1pbWFnZS1rd3Z5bG91Yy5qcGc.jpg',
+      // Cut-out of Jaren 80 – 2009-046-294 (9624486954).jpg, Wikimedia Commons, CC0, by Studio Alijn:
+      // https://commons.wikimedia.org/wiki/File%3AJaren_80_%E2%80%93_2009-046-294_%289624486954%29.jpg
+      imageUrl: `${assetBaseUrl}/static/products/copper-pendant-bedside-lamp.png`,
       variants: [{ sku: 'HOM-LAMP-CPR', attributes: {}, priceMinor: 4499, onHand: 19 }]
     },
     // --- Sports, brandSlug trailforge-sports, sellerIndex 0 (Northwind Trading Co.) ---
@@ -638,7 +650,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       sellerIndex: 0,
       description: 'A 5mm non-slip yoga mat with a textured surface for grip.',
       // Rolled teal yoga mat, CC0, via Rawpixel/Openverse (no attribution required).
-      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA0L2JzMTIwLWltYWdlLmpwZw.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/non-slip-yoga-mat.png`,
       variants: [{ sku: 'SPT-YOGA-TEAL', attributes: { color: 'Teal' }, priceMinor: 1899, onHand: 48 }]
     },
     {
@@ -649,7 +661,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       sellerIndex: 0,
       description: 'A pair of adjustable-weight dumbbells for home strength training.',
       // Adjustable dumbbells on a gym floor, CC0, via Rawpixel/Openverse (no attribution required).
-      imageUrl: 'https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcHg4MTY2MjUtaW1hZ2Uta3d2eGV0NGkuanBn.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/adjustable-dumbbell-set.png`,
       variants: [{ sku: 'SPT-DMBL-PAIR', attributes: { size: 'Pair' }, priceMinor: 5499, onHand: 21 }]
     },
     {
@@ -660,7 +672,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       sellerIndex: 0,
       description: 'An official size-7 basketball with a durable rubber cover for indoor or outdoor play.',
       // Basketball on grass, CC0, via Rawpixel/Openverse (no attribution required).
-      imageUrl: 'https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvLWEwMTAtbWFya3Vzcy0wNTEwLmpwZw.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/official-size-basketball.png`,
       variants: [{ sku: 'SPT-BBALL-7', attributes: { size: '7' }, priceMinor: 2199, onHand: 40 }]
     },
     {
@@ -671,7 +683,7 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       sellerIndex: 0,
       description: 'A leak-proof insulated water bottle with a flip-top straw lid.',
       // Pink insulated sports water bottle, CC0, via Rawpixel/Openverse (no attribution required).
-      imageUrl: 'https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcHg4NTQ1MzgtaW1hZ2Uta3d5bzlmamguanBn.jpg',
+      imageUrl: `${assetBaseUrl}/static/products/insulated-sports-water-bottle.png`,
       variants: [{ sku: 'SPT-BTL-PINK', attributes: { color: 'Pink' }, priceMinor: 1199, onHand: 58 }]
     },
     {
@@ -681,8 +693,9 @@ async function seedProducts(categories: Awaited<ReturnType<typeof seedCategories
       brandSlug: 'trailforge-sports',
       sellerIndex: 0,
       description: 'A size-5 match-quality soccer ball for training or play.',
-      // Soccer ball on a grass field, CC0, via Rawpixel/Openverse (no attribution required).
-      imageUrl: 'https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9zdGF0aWMvaW1hZ2Uvd2Vic2l0ZS8yMDIyLTA0L2xyL3B4MTMzMjkxOC1pbWFnZS1rd3Z3MHhoMy5qcGc.jpg',
+      // Cut-out of UEFA Euro 2024 Match Ball Fussballliebe.jpg, Wikimedia Commons, CC0, by Bildersindtoll:
+      // https://commons.wikimedia.org/wiki/File%3AUEFA_Euro_2024_Match_Ball_Fussballliebe.jpg
+      imageUrl: `${assetBaseUrl}/static/products/match-soccer-ball.png`,
       variants: [{ sku: 'SPT-SOCCER-5', attributes: { size: '5' }, priceMinor: 1999, onHand: 44 }]
     }
   ];
@@ -787,27 +800,79 @@ async function seedCoupons() {
 }
 
 async function seedPromotions(categories: Awaited<ReturnType<typeof seedCategories>>['categories']) {
-  const electronics = categories.find((c) => c.slug === 'electronics');
-  if (!electronics) return;
+  const bySlug = (slug: string) => categories.find((c) => c.slug === slug);
+  const days = (n: number) => new Date(Date.now() + n * 24 * 60 * 60 * 1000);
 
-  await PromotionModel.findOneAndUpdate(
-    { name: 'Electronics Flash Sale (Demo)' },
+  /**
+   * Demo campaigns, surfaced by GET /promotions and applied automatically at
+   * checkout by pricing.service.ts — the storefront's "Special Offers" screen
+   * renders exactly these, so there is no invented promo copy in the client.
+   */
+  const demos = [
     {
-      $setOnInsert: {
-        name: 'Electronics Flash Sale (Demo)',
-        description: 'Automatic 5% off electronics category, demo campaign',
-        discountType: 'percentage',
-        percentageBasisPoints: 500,
-        currency: 'USD',
-        eligibleCategoryIds: [electronics._id],
-        startsAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-        expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
-        isActive: true,
-        priority: 1
-      }
+      name: 'Electronics Flash Sale (Demo)',
+      description: 'Automatic 5% off electronics category, demo campaign',
+      categorySlug: 'electronics',
+      percentageBasisPoints: 500,
+      startsAt: days(-1),
+      expiresAt: days(14),
+      priority: 1
     },
-    { upsert: true }
-  );
+    {
+      name: 'Fashion Week Deal (Demo)',
+      description: 'Automatic 20% off everything in fashion, demo campaign',
+      categorySlug: 'fashion',
+      percentageBasisPoints: 2000,
+      startsAt: days(-2),
+      expiresAt: days(10),
+      priority: 3
+    },
+    {
+      name: 'Home Refresh (Demo)',
+      description: 'Automatic 15% off home and kitchen, demo campaign',
+      categorySlug: 'home',
+      percentageBasisPoints: 1500,
+      startsAt: days(-3),
+      expiresAt: days(21),
+      priority: 2
+    },
+    {
+      name: 'Reading Week (Demo)',
+      description: 'Automatic 10% off books, demo campaign',
+      categorySlug: 'books',
+      percentageBasisPoints: 1000,
+      startsAt: days(-1),
+      expiresAt: days(7),
+      priority: 0
+    }
+  ];
+
+  for (const demo of demos) {
+    const category = bySlug(demo.categorySlug);
+    if (!category) continue;
+    await PromotionModel.findOneAndUpdate(
+      { name: demo.name },
+      {
+        $setOnInsert: {
+          name: demo.name,
+          discountType: 'percentage',
+          currency: 'USD',
+          eligibleCategoryIds: [category._id],
+          isActive: true
+        },
+        // $set so re-running the seed slides the demo windows forward instead of
+        // leaving campaigns that have since expired sitting inactive.
+        $set: {
+          description: demo.description,
+          percentageBasisPoints: demo.percentageBasisPoints,
+          startsAt: demo.startsAt,
+          expiresAt: demo.expiresAt,
+          priority: demo.priority
+        }
+      },
+      { upsert: true }
+    );
+  }
 }
 
 async function seedAddresses(customers: Awaited<ReturnType<typeof seedCustomers>>['customers']) {

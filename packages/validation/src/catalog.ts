@@ -8,7 +8,8 @@ export const productListQuerySchema = listQuerySchema.extend({
   minPriceMinor: z.coerce.number().int().min(0).optional(),
   maxPriceMinor: z.coerce.number().int().min(0).optional(),
   q: z.string().trim().max(200).optional(),
-  inStockOnly: z.coerce.boolean().optional()
+  inStockOnly: z.coerce.boolean().optional(),
+  minRating: z.coerce.number().min(0).max(5).optional()
 });
 
 export const productSlugParamSchema = z.object({

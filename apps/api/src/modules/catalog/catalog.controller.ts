@@ -6,7 +6,7 @@ import * as service from './catalog.service.js';
 import { listApprovedReviewsForProduct } from '../../repositories/review.repository.js';
 import { recordProductView } from '../../repositories/discovery.repository.js';
 import { hashGuestToken } from '../../repositories/cart.repository.js';
-import { toCategoryDto, toBrandDto, toProductSummaryDto, toProductDetailDto, toQuestionDto } from './catalog.dto.js';
+import { toCategoryDto, toBrandDto, toProductSummaryDto, toProductDetailDto, toQuestionDto, toPromotionDto } from './catalog.dto.js';
 import { toReviewDto } from '../reviews/review.dto.js';
 import { findPublishedProductBySlug } from '../../repositories/product.repository.js';
 
@@ -18,6 +18,11 @@ export async function listCategoriesHandler(_req: Request, res: Response): Promi
 export async function listBrandsHandler(_req: Request, res: Response): Promise<void> {
   const brands = await service.listBrands();
   sendSuccess(res, brands.map(toBrandDto));
+}
+
+export async function listPromotionsHandler(_req: Request, res: Response): Promise<void> {
+  const promotions = await service.listActivePromotions();
+  sendSuccess(res, promotions.map(toPromotionDto));
 }
 
 export async function listProductsHandler(req: Request, res: Response): Promise<void> {

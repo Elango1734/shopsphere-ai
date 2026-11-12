@@ -11,6 +11,7 @@ export interface CatalogFilter {
   maxPriceMinor?: number;
   searchText?: string;
   inStockOnly?: boolean;
+  minRating?: number;
 }
 
 export interface CatalogPage {
@@ -40,6 +41,7 @@ export async function listPublishedProducts(
   if (filter.brandId) query.brandId = filter.brandId;
   if (filter.sellerId) query.sellerId = filter.sellerId;
   if (filter.inStockOnly) query.hasAvailableStock = true;
+  if (filter.minRating != null) query['ratingAggregate.average'] = { $gte: filter.minRating };
   if (filter.minPriceMinor != null || filter.maxPriceMinor != null) {
     query.minPriceMinor = {
       ...(filter.minPriceMinor != null ? { $gte: filter.minPriceMinor } : {}),

@@ -1,5 +1,5 @@
 import type { ApiClient } from '../core.js';
-import type { BrandDto, CategoryDto, PaginationMeta, ProductDetailDto, ProductSummaryDto, QuestionDto, ReviewDto } from '../types.js';
+import type { BrandDto, CategoryDto, PaginationMeta, ProductDetailDto, ProductSummaryDto, PromotionDto, QuestionDto, ReviewDto } from '../types.js';
 
 export interface ProductListQuery {
   page?: number;
@@ -11,6 +11,8 @@ export interface ProductListQuery {
   maxPriceMinor?: number;
   q?: string;
   inStockOnly?: boolean;
+  /** Lower bound on a product's average rating, 0-5. */
+  minRating?: number;
   sort?: string;
   order?: 'asc' | 'desc';
 }
@@ -19,6 +21,9 @@ export function createCatalogModule(client: ApiClient) {
   return {
     listCategories: () => client.request<CategoryDto[]>('GET', '/categories'),
     listBrands: () => client.request<BrandDto[]>('GET', '/brands'),
+
+    /** Campaign discounts currently running — applied automatically at checkout, no code needed. */
+    listPromotions: () => client.request<PromotionDto[]>('GET', '/promotions'),
 
     listProducts: (query: ProductListQuery = {}) =>
       client.requestWithMeta<ProductSummaryDto[], { pagination: PaginationMeta }>('GET', '/products', undefined, {

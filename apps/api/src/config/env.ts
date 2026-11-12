@@ -45,6 +45,10 @@ const envSchema = z
     NODE_ENV: z.enum(['development', 'test', 'staging', 'production']).default('development'),
     API_PORT: z.coerce.number().int().min(1).max(65535).default(4000),
     API_BASE_URL: z.string().default('http://localhost:4000/api/v1'),
+    // Origin the statically served catalog imagery (public/products) is reachable at.
+    // Seeded product image URLs are built from this, so a device on the LAN can be
+    // pointed at the host's IP instead of localhost without touching the seed script.
+    ASSET_BASE_URL: z.string().default('http://localhost:4000'),
     MONGODB_URI: z
       .string()
       .min(1, 'MONGODB_URI is required')
