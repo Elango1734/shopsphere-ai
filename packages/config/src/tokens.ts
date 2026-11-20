@@ -129,19 +129,39 @@ export const typography = {
 } as const;
 
 /**
+ * The app's type scale: four roles, four sizes, nothing else. Every screen
+ * sizes text through these — a raw `fontSize: <number>` in a screen is a
+ * regression, not a local decision.
+ *
+ *   heading     20  screen headings and section headings ("Shop by category")
+ *   title       18  card / row / sheet titles sitting inside a section
+ *   normal      16  body copy, row labels, inputs, button labels
+ *   description 14  secondary and supporting copy, metadata, captions
+ *
+ * Sizes only — weight stays with the call site, since the same size carries
+ * several weights (a bold price and a medium caption are both `normal`).
+ */
+export const textSizes = { heading: 20, title: 18, normal: 16, description: 14 } as const;
+
+/** Line heights paired to `textSizes`, at the kit's ~1.3 ratio. */
+export const textLineHeights = { heading: 26, title: 24, normal: 22, description: 20 } as const;
+
+export type TextRole = keyof typeof textSizes;
+
+/**
  * Named text styles lifted verbatim from the kit, as size/lineHeight/weight
  * triples. Screens should reach for these rather than re-deriving sizes.
  */
 export const textStyles = {
-  h1: { fontSize: 40, lineHeight: 48, fontFamily: fontFamilies.black },
-  h2: { fontSize: 24, lineHeight: 29, fontFamily: fontFamilies.bold },
-  h3: { fontSize: 20, lineHeight: 25, fontFamily: fontFamilies.bold },
-  bodyLgBold: { fontSize: 18, lineHeight: 22, fontFamily: fontFamilies.bold },
-  bodyLg: { fontSize: 18, lineHeight: 25, fontFamily: fontFamilies.medium },
-  bodyBold: { fontSize: 16, lineHeight: 22, fontFamily: fontFamilies.bold },
-  body: { fontSize: 16, lineHeight: 22, fontFamily: fontFamilies.semibold },
-  caption: { fontSize: 14, lineHeight: 20, fontFamily: fontFamilies.medium },
-  captionBold: { fontSize: 14, lineHeight: 20, fontFamily: fontFamilies.semibold }
+  h1: { fontSize: textSizes.heading, lineHeight: textLineHeights.heading, fontFamily: fontFamilies.black },
+  h2: { fontSize: textSizes.heading, lineHeight: textLineHeights.heading, fontFamily: fontFamilies.bold },
+  h3: { fontSize: textSizes.heading, lineHeight: textLineHeights.heading, fontFamily: fontFamilies.bold },
+  bodyLgBold: { fontSize: textSizes.title, lineHeight: textLineHeights.title, fontFamily: fontFamilies.bold },
+  bodyLg: { fontSize: textSizes.title, lineHeight: textLineHeights.title, fontFamily: fontFamilies.medium },
+  bodyBold: { fontSize: textSizes.normal, lineHeight: textLineHeights.normal, fontFamily: fontFamilies.bold },
+  body: { fontSize: textSizes.normal, lineHeight: textLineHeights.normal, fontFamily: fontFamilies.semibold },
+  caption: { fontSize: textSizes.description, lineHeight: textLineHeights.description, fontFamily: fontFamilies.medium },
+  captionBold: { fontSize: textSizes.description, lineHeight: textLineHeights.description, fontFamily: fontFamilies.semibold }
 } as const;
 
 /** 4px grid. */
