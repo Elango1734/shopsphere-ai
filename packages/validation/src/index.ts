@@ -10,3 +10,4 @@ export * from './admin.js';
 export * from './support.js';
 export * from './ai.js';
 export * from './notifications.js';
+export * from './analytics.js';

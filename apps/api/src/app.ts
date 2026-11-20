@@ -25,6 +25,7 @@ import { adminRouter } from './modules/admin/admin.routes.js';
 import { supportRouter, supportAgentRouter } from './modules/support/support.routes.js';
 import { notificationRouter } from './modules/notifications/notification.routes.js';
 import { aiRouter } from './modules/ai/ai.routes.js';
+import { analyticsRouter } from './modules/analytics/analytics.routes.js';
 
 const MAX_BODY_SIZE = '1mb';
 /** `public/` holds the seeded catalog cut-outs; this file lives in src/, so go up one. */
@@ -77,6 +78,7 @@ export function createApp(): Express {
   app.use('/api/v1/support-agent', supportAgentRouter);
   app.use('/api/v1/notifications', notificationRouter);
   app.use('/api/v1/ai', aiRouter);
+  app.use('/api/v1/analytics', analyticsRouter);
 
   app.use(notFoundMiddleware);
   app.use(errorHandlerMiddleware);

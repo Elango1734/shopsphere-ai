@@ -30,3 +30,6 @@ export const searchRateLimiter = makeLimiter(60 * 1000, 60, 'SEARCH_RATE_LIMITED
 export const aiRateLimiter = makeLimiter(60 * 1000, 20, 'AI_RATE_LIMITED');
 export const checkoutRateLimiter = makeLimiter(60 * 1000, 10, 'CHECKOUT_RATE_LIMITED');
 export const mutationRateLimiter = makeLimiter(60 * 1000, 120, 'RATE_LIMITED');
+// Storefront event ingest: batched up to 50 per request, so 60 requests a minute is a generous ceiling
+// for a real visit while still bounding what one client can write.
+export const eventRateLimiter = makeLimiter(60 * 1000, 60, 'EVENT_RATE_LIMITED');

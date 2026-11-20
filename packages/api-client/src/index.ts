@@ -10,6 +10,7 @@ import { createReviewsModule } from './modules/reviews.js';
 import { createSupportModule } from './modules/support.js';
 import { createNotificationsModule } from './modules/notifications.js';
 import { createAiModule } from './modules/ai.js';
+import { createAnalyticsModule } from './modules/analytics.js';
 import { createAdminModule } from './modules/admin.js';
 import { createSellerModule } from './modules/seller.js';
 import { createSupportAgentModule } from './modules/supportAgent.js';
@@ -20,6 +21,7 @@ export * from './modules/auth.js';
 export * from './modules/profile.js';
 export * from './modules/catalog.js';
 export * from './modules/cart.js';
+export * from './modules/analytics.js';
 export * from './modules/checkout.js';
 export * from './modules/orders.js';
 export * from './modules/reviews.js';
@@ -48,6 +50,7 @@ export function createApiClient(config: ApiClientConfig) {
     support: createSupportModule(client),
     notifications: createNotificationsModule(client),
     ai: createAiModule(client),
+    analytics: createAnalyticsModule(client),
     admin: createAdminModule(client),
     seller: createSellerModule(client),
     supportAgent: createSupportAgentModule(client)
