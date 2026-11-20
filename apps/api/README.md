@@ -111,7 +111,12 @@ src/
                            into prose when `AI_PROVIDER=anthropic` + `AI_API_KEY` are set, with a strict
                            timeout + automatic fallback to the deterministic reply on any error. Discovery,
                            compare, support (FAQ + authenticated order status), review summaries, related
-                           products, and user-deletable conversation history.
+                           products, and user-deletable conversation history. Merchant-facing:
+                           `GET /seller/ai/daily-report` (insights.service.ts + repositories/insights.repository.ts)
+                           — day-over-day revenue/orders/units/AOV, best sellers, stockout risk from 30-day
+                           velocity vs available stock, slow movers, abandoned carts and recommended actions,
+                           all aggregated in MongoDB first; the model only narrates the finished object and the
+                           actions are derived arithmetically, never generated.
   openapi/               openapi.yaml (representative routes) + Swagger UI mount (non-production only)
   app.ts / server.ts     Express app factory (testable without listening) / process entry point
 ```

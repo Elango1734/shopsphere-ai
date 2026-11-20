@@ -10,6 +10,7 @@ import {
   createShipmentSchema,
   sellerOrderQuerySchema,
   adminAnalyticsQuerySchema,
+  dailyReportQuerySchema,
   objectIdParamSchema
 } from '@shopsphere/validation';
 import { validate } from '../../http/middleware/validate.js';
@@ -82,6 +83,15 @@ sellerRouter.get(
   requireRole('seller'),
   validate('query', adminAnalyticsQuerySchema),
   asyncHandler(controller.getMyAnalyticsHandler)
+);
+
+// Narrated by the AI layer but grounded in the same aggregations as the analytics
+// overview above — see modules/ai/insights.service.ts.
+sellerRouter.get(
+  '/ai/daily-report',
+  requireRole('seller'),
+  validate('query', dailyReportQuerySchema),
+  asyncHandler(controller.getMyDailyReportHandler)
 );
 
 sellerRouter.get(

@@ -500,3 +500,53 @@ export interface AdminAiMessageDto extends AiMessageDto {
 export interface AiConversationDetailDto extends AiConversationSummaryDto {
   messages: AdminAiMessageDto[];
 }
+
+/** One day-over-day comparison in the merchant daily report. `deltaPct` is null when the previous day was zero. */
+export interface ComparedMetricDto {
+  current: number;
+  previous: number;
+  deltaPct: number | null;
+}
+
+export interface DailyReportActionDto {
+  kind: 'restock' | 'recover_carts' | 'fulfil_orders' | 'review_slow_movers' | 'investigate_drop' | 'investigate_conversion';
+  title: string;
+  detail: string;
+  priority: number;
+}
+
+/**
+ * Merchant daily report. Every figure is aggregated from orders/inventory/carts
+ * server-side; `summary` is the only field a language model contributes, and it
+ * falls back to a deterministic sentence when no provider is configured.
+ */
+export interface FunnelCountsDto {
+  sessions: number;
+  productViews: number;
+  addToCarts: number;
+  checkoutStarts: number;
+  ordersPlaced: number;
+  /** null means the day was not measured — distinct from a measured zero. */
+  conversionRatePct: number | null;
+  cartAbandonmentRatePct: number | null;
+}
+
+export interface SellerDailyReportDto {
+  sellerId: string;
+  date: string;
+  comparedTo: string;
+  currency: string;
+  revenueMinor: ComparedMetricDto;
+  orderCount: ComparedMetricDto;
+  unitsSold: ComparedMetricDto;
+  averageOrderValueMinor: ComparedMetricDto;
+  topProducts: Array<{ productId: string; name: string; unitsSold: number; revenueMinor: number }>;
+  stockRisks: Array<{ variantId: string; productName: string; sku: string; available: number; dailyVelocity: number; daysOfCover: number }>;
+  slowMovers: Array<{ variantId: string; productName: string; sku: string; available: number }>;
+  abandonedCarts: { count: number; valueMinor: number; topProductNames: string[] };
+  pendingFulfillmentCount: number;
+  funnel: FunnelCountsDto;
+  previousFunnel: FunnelCountsDto;
+  summary: string;
+  actions: DailyReportActionDto[];
+}

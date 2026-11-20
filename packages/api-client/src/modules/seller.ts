@@ -5,6 +5,7 @@ import type {
   OrderSummaryDto,
   PaginationMeta,
   SellerAnalyticsOverviewDto,
+  SellerDailyReportDto,
   SellerDto,
   SellerProductDto,
   SellerVariantDto,
@@ -52,6 +53,10 @@ export function createSellerModule(client: ApiClient) {
 
     getAnalyticsOverview: (rangeDays = 30) =>
       client.request<SellerAnalyticsOverviewDto>('GET', '/seller/analytics/overview', undefined, { query: { rangeDays } }),
+
+    /** `date` is a UTC YYYY-MM-DD; omitted means yesterday, decided server-side. */
+    getDailyReport: (date?: string) =>
+      client.request<SellerDailyReportDto>('GET', '/seller/ai/daily-report', undefined, { query: date ? { date } : {} }),
 
     listProducts: (page = 1, pageSize = 20) =>
       client.requestWithMeta<SellerProductDto[], { pagination: PaginationMeta }>('GET', '/seller/products', undefined, {

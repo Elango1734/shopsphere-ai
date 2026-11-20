@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import { sendSuccess, sendPaginated } from '../../http/envelope.js';
 import { reqParam } from '../../http/reqParam.js';
 import * as service from './seller.service.js';
+import { getSellerDailyReport } from '../ai/insights.service.js';
 import { toSellerDto, toSellerProductDto, toSellerVariantDto } from './seller.dto.js';
 import { toOrderSummaryDto, toOrderDetailDto, toShipmentDto } from '../orders/order.dto.js';
 import { OrderModel } from '../../models/order.model.js';
@@ -96,4 +97,10 @@ export async function getMyAnalyticsHandler(req: Request, res: Response): Promis
   const { rangeDays } = req.query as unknown as { rangeDays: number };
   const overview = await service.getMyAnalytics(req.auth!.userId, rangeDays);
   sendSuccess(res, overview);
+}
+
+export async function getMyDailyReportHandler(req: Request, res: Response): Promise<void> {
+  const date = typeof req.query.date === 'string' ? req.query.date : undefined;
+  const report = await getSellerDailyReport(req.auth!.userId, date);
+  sendSuccess(res, report);
 }

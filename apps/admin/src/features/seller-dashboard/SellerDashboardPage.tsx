@@ -4,6 +4,7 @@ import { api } from '../../api/client';
 import { ApiClientError } from '@shopsphere/api-client';
 import { LoadingState, ErrorState } from '../../components/ui/StateViews';
 import { formatMinor } from '../../utils/money';
+import { DailyReportCard } from './DailyReportCard';
 
 const RANGE_OPTIONS = [
   { label: 'Last 7 days', value: 7 },
@@ -37,6 +38,8 @@ export function SellerDashboardPage() {
           ))}
         </select>
       </div>
+
+      <DailyReportCard />
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--spacing-4)' }}>
         <div className="stat-card">
