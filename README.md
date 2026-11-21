@@ -79,3 +79,7 @@ Live third-party payment and LLM integrations are not wired to real credentials;
 - [Testing](docs/testing.md)
 - [Deployment](docs/deployment.md)
 - [Entity and status glossary](docs/entity-status-glossary.md)
+
+## Using this code
+
+This repository is public so the code can be read and evaluated. It is **not** open source: all rights are reserved, and no permission is granted to reuse any part of it without written consent. See [LICENSE](LICENSE).
