@@ -18,8 +18,8 @@
     "typecheck:api-client": "npm run typecheck --workspace=@shopsphere/api-client",
     "typecheck:api": "npm run typecheck --workspace=@shopsphere/api",
     "typecheck:admin": "npm run typecheck --workspace=@shopsphere/admin",
-    "typecheck:mobile": "npm exec --workspace=@shopsphere/mobile -- tsc --noEmit",
-    "typecheck": "npm run typecheck:shared-types && npm run typecheck:validation && npm run typecheck:config && npm run typecheck:api-client && npm run typecheck:api && npm run typecheck:admin && npm run typecheck:mobile"
+    "typecheck": "npm run typecheck:shared-types && npm run typecheck:validation && npm run typecheck:config && npm run typecheck:api-client && npm run typecheck:api && npm run typecheck:admin",
+    "test": "npm test --workspace=@shopsphere/api"
   },
   "devDependencies": {
     "typescript": "5.8.3"

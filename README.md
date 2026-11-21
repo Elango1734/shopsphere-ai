@@ -1,5 +1,7 @@
 # ShopSphere AI
 
+[![CI](https://github.com/Elango1734/shopsphere-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/Elango1734/shopsphere-ai/actions/workflows/ci.yml)
+
 **Discover Better. Shop Smarter.**
 
 A multi-vendor commerce platform: a React Native customer app, a React/Vite operations console for administrators, sellers and support agents, and an Express/MongoDB API behind both — with an AI layer that is grounded in real data by construction rather than by prompt instruction.
@@ -60,7 +62,7 @@ Seed data with `npm run db:seed --workspace @shopsphere/api`. Per-app setup, tes
 The API suite is 116 tests across 21 suites — unit, model, integration and HTTP — run against a real in-memory MongoDB replica set and the actual Express app, not mocks of either.
 
 ```bash
-npm test --workspace @shopsphere/api
+npm test
 ```
 
 ## Status and limitations

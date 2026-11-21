@@ -1,0 +1,64 @@
+name: CI
+
+# Runs on the default branch and on every pull request into it, so `main` is
+# never green by assumption. The mobile app lives in its own repository
+# (Elango1734/ecommerce-mobile-app) and is checked by its own workflow.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel an in-flight run when the same branch is pushed again.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Typecheck and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Matches the engines field: >=22 <23.
+          node-version: '22'
+          cache: npm
+
+      # The API suite runs against a real in-memory MongoDB replica set rather
+      # than mocks, so mongodb-memory-server downloads a server binary on first
+      # use. Cached across runs to keep CI from re-fetching it every time.
+      - name: Cache MongoDB binaries
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: mongodb-binaries-${{ runner.os }}
+
+      - run: npm ci
+
+      # Downloading the server binary inside the suite races a beforeAll
+      # timeout on a cold cache, which fails the first run on a fresh machine.
+      # Fetching it as its own step makes that cost explicit instead.
+      - name: Pre-download the MongoDB test binary
+        working-directory: apps/api
+        run: |
+          node --input-type=module -e "
+          import { MongoMemoryReplSet } from 'mongodb-memory-server';
+          const rs = await MongoMemoryReplSet.create({ replSet: { count: 1 } });
+          await rs.stop();
+          "
+
+      - name: Typecheck every workspace
+        run: npm run typecheck
+
+      - name: API test suite
+        run: npm test
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
